@@ -2,7 +2,7 @@
 # DICOM Analytics and Archive (DIANA)
 [![Build Status](https://travis-ci.org/derekmerck/DIANA.svg?branch=master)](https://travis-ci.org/derekmerck/DIANA)
 
-Derek Merck <derek_merck@brown.edu>
+Derek Merck <derek_merck@brown.edu>  
 Brown University and Rhode Island Hospital  
 
 <https://github.com/derekmerck/DIANA>
@@ -12,7 +12,7 @@ Brown University and Rhode Island Hospital
 
 Hospital picture archive and communications systems (PACS) are not well suited for "big data" analysis.  It is difficult to identify and extract datasets in bulk, and moreover, high resolution data is often not even stored in the clinical systems.
 
-`DIANA` is a [DICOM][] imaging informatics platform that can be attached to the clinical systems with a very small footprint, and then tuned to support a range of tasks from high-resolution image archival to cohort discovery to radiation dose monitoring.
+**DIANA** is a [DICOM][] imaging informatics platform that can be attached to the clinical systems with a very small footprint, and then tuned to support a range of tasks from high-resolution image archival to cohort discovery to radiation dose monitoring.
 
 It is similar to [XNAT][] in providing DICOM services, image data indexing, REST endpoints for scripting, and user access control.  It is dissimilar in that it is not a monolithic codebase, but an amalgamation of free and free and open source (FOSS) systems.  Indeed, XNAT can be setup as a component of DIANA.
 
