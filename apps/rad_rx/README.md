@@ -1,15 +1,15 @@
 # ![logo](static/appIconAlt_2x.png) Rad Rx
 
-Derek Merck]<derek_merck@brown.edu>, Brown University and Rhode Island Hospital  
+Derek Merck <derek_merck@brown.edu>, Brown University and Rhode Island Hospital  
 Scott Collins, Rhode Island Hospital  
 Karen Laurie, The Miriam Hospital  
 
-<https://github.com/derekmerck/DIANA/apps/rad_rx>
+<https://github.com/derekmerck/DIANA/tree/master/apps/rad_rx>
 
 
 ## Overview
 
-`Rad Rx` is a [Splunk][] app that provides dashboards for radiation dose monitoring from DICOM
+**Rad Rx** is a [Splunk][] app that provides dashboards for radiation dose monitoring from DICOM
 structured reports and a simple incident ticketing system.
 
 It is intended to be used with [DIANA-connect][], a set of python scripts that can monitor an installation of Jodogne's [Orthanc][] and copy [DICOM][] structured report tags to a Splunk index.
@@ -17,7 +17,7 @@ It is intended to be used with [DIANA-connect][], a set of python scripts that c
 [Orthanc]: https://orthanc.chu.ulg.ac.be
 [DICOM]: http://dicom.nema.org
 [Splunk]: https://www.splunk.com
-[DIANA-connect]: https://github.com/derekmerck/DIANA/connect
+[DIANA-connect]: https://github.com/derekmerck/DIANA/tree/master/connect
 
 
 ## Dependencies

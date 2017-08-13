@@ -1,7 +1,7 @@
 
 # DICOM Analytics and Archive (DIANA)
 
-Derek Merck]<derek_merck@brown.edu>
+Derek Merck <derek_merck@brown.edu>
 Brown University and Rhode Island Hospital  
 
 <https://github.com/derekmerck/DIANA>
