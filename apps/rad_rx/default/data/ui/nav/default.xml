@@ -1,0 +1,7 @@
+<nav search_view="search" color="#3372FF">
+  <view name="CTDoseMonitoring" default='true' />
+  <view name="VIRDoseMonitoring" />
+  <view name="CTDoseOutlierTickets" />
+  <view name="search" />
+  <view name="dashboards" />
+</nav>
