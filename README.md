@@ -1,5 +1,6 @@
 
 # DICOM Analytics and Archive (DIANA)
+[![Build Status](https://travis-ci.org/derekmerck/DIANA.svg?branch=master)](https://travis-ci.org/derekmerck/DIANA)
 
 Derek Merck <derek_merck@brown.edu>
 Brown University and Rhode Island Hospital  
