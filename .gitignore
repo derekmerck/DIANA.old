@@ -5,6 +5,10 @@
 secret*
 notes*
 
+# Binary data #
+###############
+*.dcm
+
 # Compiled source #
 ###################
 *.com

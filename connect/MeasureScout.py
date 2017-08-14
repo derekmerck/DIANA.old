@@ -67,26 +67,45 @@ def MeasureScout(fp):
 
     return ret
 
-if __name__=="__main__":
 
-    logging.basicConfig(level=logging.DEBUG)
+def test_measurement():
 
     results = {}
 
-    dir = "/Users/derek/Desktop/scouts"
-    which = [0,1]
+    fp = "../test/data/CT000000.dcm"
+    ret = MeasureScout(fp)
+    results[ret['AccessionNumber']] = ret
 
-    fns = glob.glob(dir+"/*dcm")
-    # fp = fns[which]
+    fp = "../test/data/CT000001.dcm"
+    ret = MeasureScout(fp)
+    logging.debug(pformat(ret))
+    results[ret['AccessionNumber']].update(ret)
 
-    # for fp in [fns[i] for i in which]:
+    assert results == {'': {'AP_dim': 28.21344537815126,
+                            'AccessionNumber': '',
+                            'PatientName': 'Anonymized1',
+                            'lateral_dim': 42.907881773399012}}
+
+    return True
+
+def measure_directory():
+    results = {}
+
+    dir_regex = "../test/data/*dcm"
+    fns = glob.glob(dir_regex)
+
     for fp in fns:
         ret = MeasureScout(fp)
         if not results.get(ret['AccessionNumber']):
-            results[ret['AccessionNumber']]=ret
+            results[ret['AccessionNumber']] = ret
         else:
             results[ret['AccessionNumber']].update(ret)
 
     json.dump(results.values(), open('/Users/derek/Desktop/scouts.json', 'w'))
-
     logging.debug(pformat(results))
+
+if __name__=="__main__":
+
+    logging.basicConfig(level=logging.DEBUG)
+    measure_directory()
+

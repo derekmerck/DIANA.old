@@ -1,4 +1,8 @@
 language: python
 python: "2.7"
-install: pip install -r connect/requirements.txt
-script: python test/test.py
+install:
+  - pip install -r connect/requirements.txt
+  - https://dl.dropboxusercontent.com/u/30766339/dicom/CT000000.dcm -O test/data/CT000000.dcm
+  - https://dl.dropboxusercontent.com/u/30766339/dicom/CT000001.dcm -O test/data/CT000001.dcm
+script:
+  - nosetests -w connect MeasureScout.py
