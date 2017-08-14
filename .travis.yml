@@ -4,7 +4,7 @@ install:
 - pip install -r connect/requirements.txt
 - curl -L -o test/data/CT000000.dcm https://dl.dropboxusercontent.com/u/30766339/dicom/CT000000.dcm
 - curl -L -o test/data/CT000001.dcm https://dl.dropboxusercontent.com/u/30766339/dicom/CT000001.dcm
-- makedir build
+- mkdir build
 - tar -czf build/rad_rx.tar.gz rad_rx
 script:
 - nosetests -w connect MeasureScout.py
