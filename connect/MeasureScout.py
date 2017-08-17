@@ -9,6 +9,9 @@ from sklearn.mixture import GMM
 import json
 import glob
 
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 def MeasureScout(fp):
 
     # Read DICOM file and info

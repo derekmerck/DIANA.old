@@ -1,3 +1,9 @@
+import os
+import sys
+print os.getcwd()
+
+sys.path.append(os.getcwd())
+
 import logging
 import yaml
 import datetime as dt
@@ -6,7 +12,7 @@ from connect.Gateway import *
 
 logging.basicConfig(level=logging.DEBUG)
 
-with open('../secrets.yaml') as f:
+with open('secrets.yaml') as f:
     credentials = yaml.load(f)
 
 orthanc0 = OrthancGateway(address=credentials['orthanc0_address'])
