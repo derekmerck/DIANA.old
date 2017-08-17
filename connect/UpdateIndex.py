@@ -283,7 +283,7 @@ def UpdatePatientDimensions( orthanc, splunk ):
     # List of candidate series out of Splunk/dicom_series
     splunk.index = splunk.index_names['series']
     # Can limit the search with "earliest=-2d" for example
-    q = "search index={0} Modality=CT ImageType=\"*LOCALIZER*\" | table AccessionNumber SeriesNumber ID | join type=left [search index=patient_dims | table AccessionNumber AP_dim Lat_dim ] | where isnull(AP_dim) | fields - AccessionNumber SeriesNumber AP_dim".format(splunk.index)
+    q = "search earliest=2d index={0} Modality=CT ImageType=\"*LOCALIZER*\" | table AccessionNumber SeriesNumber ID | join type=left [search index=patient_dims | table AccessionNumber AP_dim Lat_dim ] | where isnull(AP_dim) | fields - AccessionNumber SeriesNumber AP_dim".format(splunk.index)
     items = splunk.ListItems(q)
 
     for i in range(0,len(items)):

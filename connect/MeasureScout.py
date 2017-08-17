@@ -54,7 +54,8 @@ def MeasureScout(fp):
 
     px_counts = np.sum(mask,axis=1)
     avg_px_count = np.mean(px_counts[px_counts>0])
-    d_avg = avg_px_count * pixel_spacing[0] / 10;
+    # Across image spacing is 2nd component (axis 1)
+    d_avg = avg_px_count * pixel_spacing[1] / 10;
 
     logging.debug("Average {0} width: {1}".format(measured_dim, d_avg))
 
@@ -91,7 +92,8 @@ def test_measurement():
 def measure_directory():
     results = {}
 
-    dir_regex = "../test/data/*dcm"
+    dir_regex = "/Users/derek/Desktop/Barrows/*dcm"
+    # dir_regex = "../test/data/*dcm"
     fns = glob.glob(dir_regex)
 
     for fp in fns:

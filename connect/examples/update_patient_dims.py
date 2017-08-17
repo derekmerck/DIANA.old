@@ -5,7 +5,7 @@ from connect.UpdateIndex import UpdatePatientDimensions
 
 logging.basicConfig(level=logging.DEBUG)
 
-with open('secrets.yaml') as f:
+with open('../secrets.yaml') as f:
     credentials = yaml.load(f)
 
 orthanc0 = OrthancGateway(address=credentials['orthanc0_address'])
