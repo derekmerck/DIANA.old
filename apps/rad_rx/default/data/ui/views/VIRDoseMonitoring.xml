@@ -1,26 +1,26 @@
 <form>
   <label>VIR Dose Monitoring</label>
   <init>
-    <set token="DOSE_INDEX">dose_reports</set>
+    <set token="DOSE_INDEX">dose_reports1</set>
     <set token="DEVICE_LUT">device_map.csv</set>
     <set token="RPD_LUT">rpd_map.csv</set>
   </init>
   <search id="all_xa">
-    <query>index=$DOSE_INDEX$ | 
+    <query>index=$DOSE_INDEX$ |
 
       spath AccessionNumber |
       spath StationName |
-      
+
       eval AccessionNumber = coalesce(Accession, AccessionNumber) |
       eval StationName = coalesce(Station, StationName) |
 
       spath RequestedProcedureDescription |
       spath ReferencedRequestSequence{}.RequestedProcedureDescription |
-      
+
       spath "X-Ray Radiation Dose Report.Accumulated X-Ray Dose Data.Dose (RP) Total" |
       spath "X-Ray Radiation Dose Report.Accumulated X-Ray Dose Data{0}.Dose (RP) Total" |
       spath "X-Ray Radiation Dose Report.Accumulated X-Ray Dose Data{1}.Dose (RP) Total" |
-      
+
       spath "X-Ray Radiation Dose Report.Accumulated X-Ray Dose Data.Total Fluoro Time" |
       spath "X-Ray Radiation Dose Report.Accumulated X-Ray Dose Data{0}.Total Fluoro Time" |
       spath "X-Ray Radiation Dose Report.Accumulated X-Ray Dose Data{1}.Total Fluoro Time" |
@@ -28,9 +28,9 @@
       spath "X-Ray Radiation Dose Report.Accumulated X-Ray Dose Data.Dose Area Product Total" |
       spath "X-Ray Radiation Dose Report.Accumulated X-Ray Dose Data{0}.Dose Area Product Total" |
       spath "X-Ray Radiation Dose Report.Accumulated X-Ray Dose Data{1}.Dose Area Product Total" |
-      
-      lookup $DEVICE_LUT$ StationName OUTPUT InstitutionName Modality Location Manufacturer RPDField Sources | 
-      where match(InstitutionName, "$MY_INST$") AND match(StationName, "$MY_STATION$") AND match(Modality, "XA") | 
+
+      lookup $DEVICE_LUT$ StationName OUTPUT InstitutionName Modality Location Manufacturer RPDField Sources |
+      where match(InstitutionName, "$MY_INST$") AND match(StationName, "$MY_STATION$") AND match(Modality, "XA") |
       eval name=InstitutionName." ".Location." (".Manufacturer.")" |
 
       eval RPD=if(RPDField=="ProcedureDescription", ProcedureDescription,
@@ -38,19 +38,22 @@
 
       eval vir_dose_raw=if(sourcetype=="csv", 'Dose _mGy',
            coalesce('X-Ray Radiation Dose Report.Accumulated X-Ray Dose Data.Dose (RP) Total', 'X-Ray Radiation Dose Report.Accumulated X-Ray Dose Data{0}.Dose (RP) Total')) |
-      eval vir_dose=round(vir_dose_raw*1000,3)  |
+      eval vir_dose=if(sourcetype=="csv", round(vir_dose_raw,3),
+                                          round(vir_dose_raw*1000,3)) |
       eval vir_doseB_raw=if(Sources==2, 'X-Ray Radiation Dose Report.Accumulated X-Ray Dose Data{1}.Dose (RP) Total', NULL) |
       eval vir_doseB=round(vir_doseB_raw*1000,3)  |
-      
+
       eval vir_fluoro_time_raw=if(sourcetype=="csv", 'FluoroTime _m',
            coalesce('X-Ray Radiation Dose Report.Accumulated X-Ray Dose Data.Total Fluoro Time', 'X-Ray Radiation Dose Report.Accumulated X-Ray Dose Data{0}.Total Fluoro Time')) |
-      eval vir_fluoro_time=round(vir_fluoro_time_raw/60,3)  |
+      eval vir_fluoro_time=if(sourcetype=="csv", round(vir_fluoro_time_raw,3),
+                                                 round(vir_fluoro_time_raw/60,3)) |
       eval vir_fluoro_timeB_raw=if(Sources==2, 'X-Ray Radiation Dose Report.Accumulated X-Ray Dose Data{1}.Total Fluoro Time', NULL) |
       eval vir_fluoro_timeB=round(vir_fluoro_timeB_raw/60,3)  |
-      
-      eval vir_dap_raw = if(sourcetype=="csv", 'DAP _mGy_cm2',
-           coalesce('X-Ray Radiation Dose Report.Accumulated X-Ray Dose Data.Dose Area Product Total', 'X-Ray Radiation Dose Report.Accumulated X-Ray Dose Data{0}.Dose Area Product Total')) | 
-      eval vir_dap=round(vir_dap_raw*10000,3) |
+
+      eval vir_dap_raw = if(sourcetype=="csv", 'DAP _cGy_cm2',
+           coalesce('X-Ray Radiation Dose Report.Accumulated X-Ray Dose Data.Dose Area Product Total', 'X-Ray Radiation Dose Report.Accumulated X-Ray Dose Data{0}.Dose Area Product Total')) |
+      eval vir_dap=if(sourcetype=="csv", round(vir_dap_raw*100,3),
+                                         round(vir_dap_raw*10000,3)) |
       eval vir_dapB_raw = if(Sources==2, 'X-Ray Radiation Dose Report.Accumulated X-Ray Dose Data{1}.Dose Area Product Total', NULL) | 
       eval vir_dapB=round(vir_dapB_raw*10000,3)
     </query>
