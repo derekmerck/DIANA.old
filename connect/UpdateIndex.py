@@ -280,17 +280,14 @@ def UpdateDoseReports( orthanc, splunk ):
 def UpdatePatientDimensions( orthanc, splunk ):
     '''Queries Splunk for unsized localizers and measures them'''
 
-    # # List of candidate series out of Splunk/dicom_series
-    # splunk.index = splunk.index_names['series']
-    # # Can limit the search with "earliest=-2d" for example
-    # q = "search index={0} Modality=CT ImageType=\"*LOCALIZER*\" | table AccessionNumber SeriesNumber ID | join type=left [search index=patient_dims | table AccessionNumber AP_dim lateral_dim ] | where isnull(AP_dim) | fields - AccessionNumber SeriesNumber AP_dim".format(splunk.index)
-    # items = splunk.ListItems(q)
-    #
-    # for i in range(0,len(items)):
-    #     items[i] = items[i].replace(',', '')
+    # List of candidate series out of Splunk/dicom_series
+    splunk.index = splunk.index_names['series']
+    # Can limit the search with "earliest=-2d" for example
+    q = "search index={0} Modality=CT ImageType=\"*LOCALIZER*\" | table AccessionNumber SeriesNumber ID | join type=left [search index=patient_dims | table AccessionNumber AP_dim lateral_dim ] | where isnull(AP_dim) | fields - AccessionNumber SeriesNumber AP_dim".format(splunk.index)
+    items = splunk.ListItems(q)
 
-
-    items=["e1cf0264-c707ee11-5b456e4b-2ec073f4-18f7408c"]
+    for i in range(0,len(items)):
+        items[i] = items[i].replace(',', '')
 
     logging.debug(pformat(items))
 
