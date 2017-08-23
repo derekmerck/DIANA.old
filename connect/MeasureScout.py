@@ -12,6 +12,10 @@ import glob
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
+# Can use tag "degrees of azimuth" to identify lateral vs. AP
+# 90 its a lateral scout -> PA dimension
+# 0,180 its an AP scout -> lateral dimension
+
 def MeasureScout(fp):
 
     # Read DICOM file and info
