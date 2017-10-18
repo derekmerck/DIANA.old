@@ -1,3 +1,7 @@
+"""
+Script used to generate large amounts of consistent sample enrollment data
+"""
+
 from hashlib import md5
 from datetime import datetime, timedelta
 import logging

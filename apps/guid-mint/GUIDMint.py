@@ -16,8 +16,11 @@ import re
 import random
 from datetime import datetime, timedelta
 
+__version__ = "0.9.0"
+
 MAX_DATE_OFFSET = int(365/2)   # generated pseudodob is within 6 months
 DEFAULT_NAMEBANK = "US_CENSUS"
+PREFIX_LENGTH = 8  # 8 = 64bits, -1 = entire value
 
 class NameBank (object):
     # NameBanks should contain gender specific surnames
@@ -60,6 +63,7 @@ class GUIDMint(object):
         super(GUIDMint, self).__init__()
         self.name_bank = NameBank(name_source)
         self.name_format = name_format
+        self.__version__ = __version__
 
     def mint_guid(self, value):
 
@@ -67,10 +71,10 @@ class GUIDMint(object):
         while not re.match(b"^[A-Z]{3}", candidate):
             candidate = b32encode(sha256(candidate).digest())
 
-        candidate = candidate.decode().strip("=")
+        candidate = candidate[:PREFIX_LENGTH].decode().strip("=")
         return candidate
 
-    def pseudo_name(self, guid, gender):
+    def pseudonym(self, guid, gender):
 
         if self.name_format == "DICOM":
             i_fam = 0
@@ -105,14 +109,15 @@ class GUIDMint(object):
 
         return name
 
-    def pseudo_dob(self, dob):
+    def pseudo_dob(self, guid, dob):
 
         d = datetime.strptime(dob, "%Y-%m-%d")
-        random.seed(dob)
+        random.seed(guid)
         r = random.randint(-MAX_DATE_OFFSET,MAX_DATE_OFFSET)
         rd = timedelta(days=r)
 
-        return (d+rd).date()
+        return str((d+rd).date())
+
 
     def pseudo_identity(self, name, gender="U", dob=None, age=None):
 
@@ -123,14 +128,15 @@ class GUIDMint(object):
         value = "|".join([name, dob, gender])
 
         g = self.mint_guid(value)
-        n = self.pseudo_name(g, gender)
-        d = self.pseudo_dob(dob)
+        n = self.pseudonym(g, gender)
+        d = self.pseudo_dob(g, dob)
 
         logging.debug("guid:      {0}".format(g))
         logging.debug("pseudonym: {0}".format(n))
         logging.debug("pseudodob: {0}".format(d))
 
         return g, n, d
+
 
 if __name__=="__main__":
     logging.basicConfig(level=logging.DEBUG)
