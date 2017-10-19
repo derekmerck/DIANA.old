@@ -6,7 +6,6 @@ Given a guid, gender (M/F/U), and name lists, returns a reproducible pseudonym
 Given a dob (%Y-%m-%d), returns a reproducible pseudodob within 6 months of the original dob
 
 If age is input, the dob is assumed to be (now - age*3655.25 days)
-
 """
 
 import logging
@@ -155,7 +154,7 @@ if __name__=="__main__":
 
     mint.pseudo_identity(name, gender, dob=dob)
 
-    name = "BOOST SU001"
+    name = "BOOSTSU001"
     age = 65
 
     mint.pseudo_identity(name, age=age)

@@ -30,24 +30,6 @@ def get_datetime(s):
     return ts
 
 
-# def get_tags(item):
-#
-#     ORTHANC_HOST = "http://localhost:8042"
-#     USER = "orthanc"
-#     PASS = "orthanc"
-#
-#     url = ORTHANC_HOST + '/instances/' + item + '/simplified-tags'
-#     r = requests.get(url, auth=(USER, PASS))
-#     tags = r.json()
-#
-#     # Stash data for later
-#     fn = item[0:4]
-#     with open("samples/" + fn + ".json", 'w') as f:
-#         json.dump(tags, f, indent=3, cls=DateTimeEncoder, sort_keys=True)
-#
-#     return tags
-
-
 def simplify_structured_tags(tags):
 
     data = {}

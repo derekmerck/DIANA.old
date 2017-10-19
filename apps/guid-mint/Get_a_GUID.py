@@ -1,9 +1,11 @@
 import os
-from flask import Flask, request, render_template, Markup
+from flask import Flask, render_template, Markup
+from flask_restplus import Resource, Api, reqparse, fields
 import markdown
-from GUIDMint import GUIDMint
 import logging
-import json
+import random
+from datetime import datetime, timedelta
+from GUIDMint import GUIDMint
 
 __version__ = "0.2.0"
 
@@ -13,9 +15,9 @@ def read(*paths):
     with open(os.path.join(*paths), 'r') as f:
         return f.read()
 
-
 app = Flask(__name__)
-
+api = Api(app, version=__version__, title='GUIDMint API',
+    description='GUIDMint API', doc='/doc/')
 
 @app.route('/')
 def index():
@@ -25,54 +27,67 @@ def index():
     return render_template('index.html', **locals())
 
 
-@app.route('/version')
-def version():
-    res = {'version':
-               {'mint': mint.__version__,
-                'api': __version__}}
+class Info(Resource):
+    def get(self):
+        res = {'version':
+                   {'mint': mint.__version__,
+                    'api': __version__}}
 
-    return json.dumps(res)
+        return res
 
+@api.route('/pseudo_id')
+class PseudoID(Resource):
 
-@app.route('/guid')
-def get_guid():
-    value = request.args.get('value')
-    guid = mint.mint_guid(value)
+    pseudo_id_fields = api.model('pseudo_id', {
+        'guid': fields.String,
+        'name': fields.String,
+        'gender': fields.String,
+        'dob': fields.String
+    })
 
-    res = {'guid': guid}
-    return json.dumps(res)
+    parser = reqparse.RequestParser()
+    parser.add_argument('name', help='Subject name or other id (req\'d)', required=True)
+    parser.add_argument('gender', help='Subject gender (M, F, U) (opt)', choices=('M', 'F', 'U'), default='U')
+    parser.add_argument('dob', help='Date of birth (%Y-%m-%d) (opt)')
+    parser.add_argument('age', help='Age (int) (opt)', type=int)
 
+    @api.marshal_with(pseudo_id_fields)
+    @api.expect(parser)
+    def get(self):
 
-@app.route('/pseudonym')
-def get_psuedonym():
-    guid = request.args.get('guid')
-    gender = request.args.get('gender')
-    n = mint.pseudonym(guid, gender)
+        args = self.parser.parse_args()
 
-    res = {'name': n}
-    return json.dumps(res)
+        name = args.get('name')
+        gender = args.get('gender')
+        dob = args.get('dob')
+        age = args.get('age')
 
+        random.seed('name')
+        if not dob and not age:
+            age = random.randint(19,65)
 
-@app.route('/pseudo_dob')
-def get_pseudo_dob():
-    guid = request.args.get('guid')
-    dob = request.args.get('dob')
-    d = mint.pseudo_dob(guid, dob)
+        if not dob and age:
+            ddob = datetime.now()-timedelta(days=age*365.25)
+            dob = str(ddob.date())
 
-    res = {'dob': d}
-    return json.dumps(res)
+        v = "|".join([name, dob, gender])
 
+        g = mint.mint_guid(v)
 
-@app.route('/pseudo_identity')
-def get_pseudo_identity():
-    name   = request.args.get('name')
-    gender = request.args.get('gender')
-    dob    = request.args.get('dob')
-    age    = int(request.args.get('age'))
-    g,n,d = mint.pseudo_identity(name, gender=gender, dob=dob, age=age)
+        res = {'guid': g, 'gender': gender}
 
-    res = {'guid': g, 'name': n, 'dob':  d}
-    return json.dumps(res)
+        d = None
+        if dob or age:
+            d = mint.pseudo_dob(g, dob=dob)
+            res['dob'] = d
+
+        if gender:
+            n = mint.pseudonym(g, gender)
+            res['name'] = n
+
+        return res
+
+api.add_resource(Info,       '/info')
 
 
 @app.route('/ndar')
@@ -87,6 +102,7 @@ def link_hashes():
     return "Hash linking is not implemented yet"
 
 
+import json
 if __name__ == '__main__':
 
     logging.basicConfig(level=logging.DEBUG)
@@ -102,3 +118,4 @@ if __name__ == '__main__':
         host = '0.0.0.0'
 
     app.run(host=host, port=port)
+

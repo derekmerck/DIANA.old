@@ -2,18 +2,13 @@ from SplunkXML2PDF import splunk_xml2pdf
 import logging
 
 fn = "cirr_dose.xml"
-splunkhost = "cirr0"
-splunkuser = "admin"
-splunkpword = "splunk"
 
 logging.basicConfig(level=logging.DEBUG)
-
 
 tokens = {'field1.earliest': '-7d',
           'field1.latest': 'now'}
 
 # splunk_xml2pdf(fn, splunkhost, splunkuser, splunkpword, tokens)
-
 
 # Import smtplib for the actual sending function
 import smtplib
@@ -24,25 +19,6 @@ import mimetypes
 # Import the email modules we'll need
 import email
 import email.mime.application
-
-# mailhost = 'smtp.office365.com'
-# port = 587
-# sender = 'dmerck@lifespan.org'
-# pword = 'QdsYaE$rYs7hc;UG'
-
-# mailhost = 'smtp.gmail.com'
-# port = 587
-# sender = 'rih3dlab@gmail.com'
-# pword = 'voxel@rih'
-
-mailhost = 'outbound.lifespan.org'
-port = 587
-sender = 'dmerck@lifespan.org'
-send_as = 'Derek Merck'
-pword = 'QdsYaE$rYs7hc;UG'
-
-to = ['scollins1@lifespan.org']
-# to = ['derek_merck@brown.edu']
 
 # Create a text/plain message
 msg = email.mime.Multipart.MIMEMultipart()
