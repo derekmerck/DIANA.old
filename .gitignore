@@ -5,6 +5,7 @@
 secret*
 notes*
 ignore*
+*retry
 
 # Binary data #
 ###############

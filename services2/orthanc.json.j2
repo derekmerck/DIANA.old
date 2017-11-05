@@ -1,0 +1,44 @@
+{
+  // Whether or not the password protection is enabled
+  "AuthenticationEnabled" : true,
+
+  // The list of the registered users. Because Orthanc uses HTTP
+  // Basic Authentication, the passwords are stored as plain text.
+  "RegisteredUsers" : {
+    "orthanc" : "{{ orthanc_admin_pw }}"
+  },
+
+
+  "Plugins": [
+    // Uncomment one of the following lines according to your platform.
+    // Update the path to the DLL on your system.  The path is relative to the working folder
+    // Orthanc will start from.  If you are unsure what the working folder is,
+    // use an absolute path
+
+    // [DM] I am using 'disabled' here b/c I can't figure out how to reliably move the
+    // active plugins into the correct directory!
+
+    "/usr/share/orthanc/plugins-disabled/libOsimisWebViewer.so",
+    "/usr/share/orthanc/plugins-disabled/libOrthancPostgreSQLIndex.so"
+  ],
+
+  "WebViewer" : {
+    "StudyDownloadEnabled": true,
+    "VideoDisplayEnabled": true,
+    // Store image annotations made by users as Orthanc Attachment 9999 and
+    // retrieve them automatically each time the viewer is opened.
+    "AnnotationStorageEnabled": true
+  },
+
+  "PostgreSQL": {
+    "EnableIndex": true,
+    "EnableStorage": false,
+    "Host": "postgres",
+    "Port":  5432,
+    "Database": "diana",
+    "Username": "orthanc",
+    "Password": "{{ orthanc_db_pw }}",
+    "Lock": false
+  }
+
+}

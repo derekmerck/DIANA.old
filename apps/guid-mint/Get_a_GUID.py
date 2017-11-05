@@ -17,23 +17,38 @@ def read(*paths):
 
 app = Flask(__name__)
 api = Api(app, version=__version__, title='GUIDMint API',
-    description='GUIDMint API', doc='/doc/')
+    description='GUIDMint API', doc='/doc')
 
 @app.route('/')
-def index():
+@app.route('/info')
+def info():
     content = read('README.md')
     content = content + "\n\n" + "Mint version: {0} | API version: {1}".format(mint.__version__, __version__)
     content = Markup(markdown.markdown(content, ['markdown.extensions.extra']))
     return render_template('index.html', **locals())
 
 
-class Info(Resource):
+@app.route('/ndar')
+def get_ndar_guid():
+    # TODO: Add NDAR translator
+    return "NDAR GUID translator is not implemented yet"
+
+
+@app.route('/link')
+def link_hashes():
+    # TODO: Add DB for hash linking
+    return "Hash linking is not implemented yet"
+
+
+@api.route('/version')
+class Version(Resource):
     def get(self):
         res = {'version':
                    {'mint': mint.__version__,
                     'api': __version__}}
 
         return res
+
 
 @api.route('/pseudo_id')
 class PseudoID(Resource):
@@ -87,22 +102,8 @@ class PseudoID(Resource):
 
         return res
 
-api.add_resource(Info,       '/info')
 
 
-@app.route('/ndar')
-def get_ndar_guid():
-    # TODO: Add NDAR translator
-    return "NDAR GUID translator is not implemented yet"
-
-
-@app.route('/link')
-def link_hashes():
-    # TODO: Add DB for hash linking
-    return "Hash linking is not implemented yet"
-
-
-import json
 if __name__ == '__main__':
 
     logging.basicConfig(level=logging.DEBUG)
