@@ -8,6 +8,8 @@
 # Orthanc UI/API      8042
 # Postgres            5432
 
+# Note:  If using a splunk indexer, you need at _least_ 1GB of ram
+
 # TODO: Add HEC tokens/indices
 # TODO: Add Project Archives
 
@@ -34,6 +36,7 @@
     pg_admin_pw:      "{{ vault_pg_admin_pw }}"
     orthanc_db_pw:    "{{ vault_orthanc_db_pw }}"
     splunk_admin_pw:  "{{ vault_splunk_admin_pw }}"
+    splunk_hec_token: "{{ vault_splunk_hec_token }}"  # for d-mon
     orthanc_admin_pw: "{{ vault_orthanc_admin_pw }}"
     orthanc_ci_pw:    "{{ vault_orthanc_ci_pw }}"
     orthanc_hb_pw:    "{{ vault_orthanc_hb_pw }}"
@@ -96,5 +99,5 @@
     sssp_fn:  content/sssp.md
 
   - role:        monitor
-    dmon_config: dmon_central.yml
+    dmon_config: dmon_central2.yml
 

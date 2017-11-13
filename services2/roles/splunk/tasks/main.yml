@@ -6,11 +6,11 @@
     image: splunk/splunk
     state: started
 
-    ports: ["8080:8000", "8088:8088", "8089:8089", "514:1514"]
+    ports: ["8000:8000", "8088:8088", "8089:8089", "514:1514"]
     volumes_from: data
 
     env:
       # Answer yes accepts presumptive upgrade
       SPLUNK_START_ARGS:  "--accept-license --answer-yes"
-      SPLUNK_ADD: "tcp 1514"
+#      SPLUNK_ADD: "tcp 1514"
       SPLUNK_CMD: "edit user admin -password {{ splunk_admin_pw }} -role admin -auth admin:changeme"
