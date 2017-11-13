@@ -1,13 +1,18 @@
 {
+  "Name" : "{{ title }}",
+
   // Whether or not the password protection is enabled
   "AuthenticationEnabled" : true,
 
   // The list of the registered users. Because Orthanc uses HTTP
   // Basic Authentication, the passwords are stored as plain text.
   "RegisteredUsers" : {
-    "orthanc" : "{{ orthanc_admin_pw }}"
+    "orthanc" : "{{ admin_pw }}"
   },
 
+  // No underscores allowed!  Use a look ahead to find just the keys
+  "OrthancPeers" :
+     {{ peers | default({}) | to_json | safe | regex_replace('\_(?=.*": {)', '-')}},
 
   "Plugins": [
     // Uncomment one of the following lines according to your platform.
@@ -35,7 +40,7 @@
     "EnableStorage": false,
     "Host": "postgres",
     "Port":  5432,
-    "Database": "diana",
+    "Database": "{{ name }}",
     "Username": "orthanc",
     "Password": "{{ orthanc_db_pw }}",
     "Lock": false

@@ -1,0 +1,47 @@
+---
+#- name: install rhel-extra for cent/rhel
+#  sudo: True
+#  command: rpm -iUvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+#  when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+#  ignore_errors: yes  # Maybe already installed
+#  when: FRESH is defined
+
+#- name: install universe repo for ubuntu
+#  sudo: True
+#  apt_repository: repo='deb http://archive.ubuntu.com/ubuntu/ trusty universe' state=present
+#  when: FRESH is defined #AND ansible_distribution == 'Ubuntu'
+
+# Need to install docker if image doesn't have it
+# https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-docker-ce-1
+
+# And add $USER as a user
+# https://docs.docker.com/engine/installation/linux/linux-postinstall/
+# (and may need to log out...)
+
+- name: install packages
+  package: name={{ item }}
+  sudo: True
+  with_items:
+    - git
+    - python-pip
+    - python-psycopg2
+    - python-setuptools
+  when: FRESH is defined
+
+- name: install pip packages
+  pip: name={{ item }}
+  sudo: True
+  with_items:
+    - docker-py
+  when: FRESH is defined
+
+- name: Setup persistent data
+  docker_container:
+    name: data
+    image: busybox
+    state: present
+    volumes:
+      - /var/lib/postgresql/data
+      - /var/lib/orthanc/db
+      - /opt/splunk/etc
+      - /opt/splunk/var

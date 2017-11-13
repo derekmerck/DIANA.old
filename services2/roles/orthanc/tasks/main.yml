@@ -1,0 +1,51 @@
+---
+
+- name: "Setup orthanc db in postgres"
+  postgresql_db: "name={{ name }}
+                  state=present
+                  login_host=localhost
+                  port=5432
+                  login_user=postgres
+                  login_password={{ pg_admin_pw }}"
+
+- name: "Setup orthanc user for db in postgres"
+  postgresql_user: "db={{ name }}
+                   name=orthanc
+                   password={{ orthanc_db_pw }}
+                   encrypted=yes
+                   state=present
+                   login_host=localhost
+                   port=5432
+                   login_user=postgres
+                   login_password={{ pg_admin_pw }}"
+
+- name: "Create orthanc config"
+#    sudo: True
+  template: >
+    src=templates/orthanc.json.j2
+    dest=/tmp/{{ name }}.json
+  become: no
+  notify: restart_orthanc
+
+- name: Setup orthanc container
+  docker_container:
+
+    name: "{{ name }}"
+    image: osimis/orthanc
+    state: started
+    links: "{{ ['postgres'] if peers=={} else ['postgres']+peers.keys() }}"
+
+    ports: ["{{ api_port }}:8042"]
+    volumes_from: data
+    volumes:
+      - "/tmp/{{ name }}.json:/etc/orthanc/orthanc.json:ro"
+
+    env:
+      PLUGINS_BUNDLE_DEFAULTS: false
+
+#- name: Get containter IP
+#  shell: docker inspect --format "{{ .NetworkSettings.IPAddress }}" {{name}}
+#  register:  "addrs"
+#
+#- debug:
+#    msg: "Addresses: {{addrs}}"

@@ -1,0 +1,7 @@
+---
+- name: restart_orthanc
+  docker_container:
+    name: "{{ name }}"
+    state: started
+    restart: yes
+  ignore_errors: yes  # Might not exist yet

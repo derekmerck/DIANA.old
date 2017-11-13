@@ -1,0 +1,24 @@
+---
+- name: Install d-mon.py
+  copy:
+    src:  ../connect/d-mon.py
+    dest: /usr/bin/d-mon.py
+    mode: u+rwx,g+rx,a+rx
+  become: yes
+
+
+- name: install pip packages
+  pip: name={{ item }}
+  sudo: True
+  with_items:
+    - requests
+    - pyyaml
+
+
+- name: Copy d-mon config
+  template: >
+    src={{ dmon_config }}
+    dest=/tmp/{{ dmon_config }}
+
+#- name: Run d-mon
+#  shell: python /tmp/{{ dmon_config }} --config /tmp/{{ dmon_config }}
