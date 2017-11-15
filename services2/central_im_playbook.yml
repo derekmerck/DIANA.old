@@ -1,23 +1,23 @@
 # Simple DIANA Setup
 
+# Orthanc Queues      814x
+# Orthanc Archives    804x
 # Splunk Syslog        512
-# Splunk Interface    8080
+# Splunk Interface    8000
 # Splunk HEC          8088
 # Splunk API          8089
-# Orthanc DICOM        104
-# Orthanc UI/API      8042
 # Postgres            5432
 
-# Note:  If using a splunk indexer, you need at _least_ 1GB of ram
+# IMPORTANT!  If using a splunk indexer, you need at _least_ 1GB of ram
 
-# TODO: Add HEC tokens/indices
-# TODO: Add Project Archives
+# TODO: Add SMB mapped folder and setup Splunk monitor
+# TODO: Add HEC tokens/indices automatically
 
 # TODO: Add Front-End
 #   TODO: Add GUIDMint
-#   TODO: Add Uploader + Anonymizer/Tagger
+#   TODO: Add Uploader
 
-# TODO: Add Push from Core to Project Archive
+# TODO: Add Indexer for Core (all data is in the same buckets)
 
 # > ansible-playbook -i secret_inventory.yml --vault-password secret_vault_pw.txt central_im_playbook.yml
 
@@ -36,7 +36,7 @@
     pg_admin_pw:      "{{ vault_pg_admin_pw }}"
     orthanc_db_pw:    "{{ vault_orthanc_db_pw }}"
     splunk_admin_pw:  "{{ vault_splunk_admin_pw }}"
-    splunk_hec_token: "{{ vault_splunk_hec_token }}"  # for d-mon
+    splunk_hec_token: "{{ vault_splunk_hec_token }}"  # just for d-mon
     orthanc_admin_pw: "{{ vault_orthanc_admin_pw }}"
     orthanc_ci_pw:    "{{ vault_orthanc_ci_pw }}"
     orthanc_hb_pw:    "{{ vault_orthanc_hb_pw }}"
@@ -94,10 +94,8 @@
   - role: splunk
 
   - role: nginx
-    title: Central Imaging
-    index_fn: content/index.md
-    sssp_fn:  content/sssp.md
+
+  - role: diana-utils
 
   - role:        monitor
     dmon_config: dmon_central2.yml
-

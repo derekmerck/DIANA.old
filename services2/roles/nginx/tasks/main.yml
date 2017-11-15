@@ -5,34 +5,6 @@
     dest=/tmp/nginx-head.conf
   become: no
 
-- set_fact:
-    index_content: "{{ lookup('file', index_fn) }}"
-    sssp_content:  "{{ lookup('file', sssp_fn)  }}"
-
-- name: "Setup remote content dir"
-  file:
-    path: /tmp/www
-    state: directory
-
-- name: "Create templated pages"
-  template: >
-    src=templates/strapdown.html.j2
-    dest=/tmp/www/{{item.fn}}.html
-  become: no
-  with_items:
-  - title: "{{title}}"
-    content: "{{index_content}}"
-    fn: index
-  - title: "{{title}} - Christianson Syndrome"
-    content: "{{sssp_content}}"
-    fn: ci_sssp
-  - title: "{{title}} - HOBIT"
-    content: "{{sssp_content}}"
-    dicom_port: 4146
-    fn: hb_sssp
-  - title: "{{title}} - ProTECT III"
-    content: "{{sssp_content}}"
-    fn: p3_sssp
 
 - name: Setup nginx container
   docker_container:
@@ -48,4 +20,5 @@
       - orthanc_p3
     volumes:
       - "/tmp/nginx-head.conf:/etc/nginx/nginx.conf:ro"
-      - "/tmp/www:/etc/nginx/html:ro"
+#      - "/tmp/www:/etc/nginx/html:ro"
+

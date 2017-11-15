@@ -1,0 +1,28 @@
+
+## {{ title }}
+
+{{ preamble }}
+
+{%- for network, value in studies.iteritems() %}
+
+---
+### {{ network }}
+  {%- for trial, value in value.iteritems() %}
+  
+#### {{ trial }}
+
+   {{ value.desc }}
+  
+   {% if value.pi %}* PI: {{ value.pi }}{% endif %}
+   {% if value.citation -%}
+   * [Primary citation]({{ value.citation }})
+   {% endif -%}
+   * Image enrollment stats
+   * [Upload a study](/upload/{{ value.study_id }})
+   * [Imaging review](orthanc_{{ value.study_id }})
+    
+  {%- endfor %}
+{% endfor %}
+---
+
+{{ postamble }}

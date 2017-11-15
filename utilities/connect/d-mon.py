@@ -119,6 +119,8 @@ def continuous():
 
 
 def one_shot():
+    # For one-shots, we should confirm that the data is not
+    # already on the dest/index_dest
 
     logging.debug('Starting one shot processing')
 

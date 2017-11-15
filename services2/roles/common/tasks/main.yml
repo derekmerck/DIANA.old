@@ -1,10 +1,10 @@
 ---
-#- name: install rhel-extra for cent/rhel
-#  sudo: True
-#  command: rpm -iUvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-#  when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
-#  ignore_errors: yes  # Maybe already installed
-#  when: FRESH is defined
+- name: install rhel-extra for cent/rhel
+  become: yes
+  command: rpm -iUvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+  ignore_errors: yes  # Maybe already installed
+  when: FRESH is defined
 
 #- name: install universe repo for ubuntu
 #  sudo: True
@@ -14,13 +14,17 @@
 # Need to install docker if image doesn't have it
 # https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-docker-ce-1
 
+# For RHEL this is actually a pain in the rear to get Docker CE installed
+# See https://www.ibm.com/support/knowledgecenter/en/SSBS6K_2.1.0/installing/dockerce_rhel.html
+# And follow instructions _specifically_ for 17.03 (will not work with more recent)
+
 # And add $USER as a user
 # https://docs.docker.com/engine/installation/linux/linux-postinstall/
 # (and may need to log out...)
 
 - name: install packages
   package: name={{ item }}
-  sudo: True
+  become: yes
   with_items:
     - git
     - python-pip
@@ -30,7 +34,7 @@
 
 - name: install pip packages
   pip: name={{ item }}
-  sudo: True
+  become: yes
   with_items:
     - docker-py
   when: FRESH is defined

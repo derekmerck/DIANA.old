@@ -1,0 +1,22 @@
+---
+- name: Setup DIANA Utilities Container
+  docker_image:
+    name:  diana-utils
+    state: present
+    path:  /Users/derek/dev/DIANA/utilities/tfe/
+
+- name: Copy TFE Config
+  copy:
+    src:  "{{ tfe_config }}"
+    dest: /tmp/tfe_config.yml
+
+- name: Run TFE
+  docker_container:
+    name: d-tfe
+    image: diana-utils
+    ports: ["{{ tfe_port }}:8000"]
+    cmd:   diana-tfe.py /tmp/tfe_config.yml
+    working_dir: /usr/src/app/utilities/tfe
+    volumes:
+      - "{{ diana_utils_path }}:/usr/src/app"
+      - "/tmp/tfe.config:/tmp/tfe.config:ro"

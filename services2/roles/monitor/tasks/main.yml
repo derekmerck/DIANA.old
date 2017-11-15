@@ -1,8 +1,16 @@
 ---
+# TODO: d-mon should be a PIP package w requirements, etc.
 - name: Install d-mon.py
   copy:
     src:  ../connect/d-mon.py
     dest: /usr/bin/d-mon.py
+    mode: u+rwx,g+rx,a+rx
+  become: yes
+
+- name: Install StructuredTags.py
+  copy:
+    src:  ../connect/StructuredTags.py
+    dest: /usr/bin/StructuredTags.py
     mode: u+rwx,g+rx,a+rx
   become: yes
 
