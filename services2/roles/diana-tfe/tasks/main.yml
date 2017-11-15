@@ -1,0 +1,11 @@
+---
+- name: Copy TFE Config
+  copy:
+    src:  "{{ tfe_config }}"
+    dest: /tmp/tfe_config.yml
+
+- name: Startup the front-end interface
+  shell: python diana-tfe.py /tmp/tfe_config.yml </dev/null >/dev/null 2>&1 &
+  args:
+    chdir: /usr/src/DIANA/utilities/tfe
+

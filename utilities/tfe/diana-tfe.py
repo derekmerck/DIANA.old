@@ -68,4 +68,4 @@ if __name__ == '__main__':
     opts = parser.parse_args()
 
     config, pages = prerender(opts.config)
-    app.run()
+    app.run(HOST="0.0.0.0")

@@ -1,22 +1,16 @@
 ---
-- name: Setup DIANA Utilities Container
-  docker_image:
-    name:  diana-utils
-    state: present
-    path:  /Users/derek/dev/DIANA/utilities/tfe/
+- name: Install pip packages
+  pip: name={{ item }}
+  become: yes
+  with_items:
+    - flask
+    - jinja2
+    - markdown
+  when: FRESH is defined
 
-- name: Copy TFE Config
-  copy:
-    src:  "{{ tfe_config }}"
-    dest: /tmp/tfe_config.yml
+- name: Install DIANA-Utils
+  git:
+    repo: https://github.com/derekmerck/DIANA
+    dest: /usr/src/DIANA
+  become: yes
 
-- name: Run TFE
-  docker_container:
-    name: d-tfe
-    image: diana-utils
-    ports: ["{{ tfe_port }}:8000"]
-    cmd:   diana-tfe.py /tmp/tfe_config.yml
-    working_dir: /usr/src/app/utilities/tfe
-    volumes:
-      - "{{ diana_utils_path }}:/usr/src/app"
-      - "/tmp/tfe.config:/tmp/tfe.config:ro"

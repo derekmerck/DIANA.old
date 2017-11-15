@@ -22,7 +22,7 @@
 # https://docs.docker.com/engine/installation/linux/linux-postinstall/
 # (and may need to log out...)
 
-- name: install packages
+- name: Install packages
   package: name={{ item }}
   become: yes
   with_items:
@@ -32,7 +32,7 @@
     - python-setuptools
   when: FRESH is defined
 
-- name: install pip packages
+- name: Install pip packages
   pip: name={{ item }}
   become: yes
   with_items:

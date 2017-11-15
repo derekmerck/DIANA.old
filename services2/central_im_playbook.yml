@@ -95,7 +95,8 @@
 
   - role: nginx
 
-  - role: diana-utils
+  - role: diana-tfe
+    tfe_config: ../test/secret_central_im_tfe.yml
 
-  - role:        monitor
-    dmon_config: dmon_central2.yml
+#  - role:        monitor
+#    dmon_config: dmon_central2.yml
