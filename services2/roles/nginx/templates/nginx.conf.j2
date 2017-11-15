@@ -30,6 +30,10 @@ http {
 
     #include /etc/nginx/conf.d/*.conf;
 
+    upstream tfe {
+        server localhost:5000;
+    }
+
     upstream orthanc_core {
         server orthanc_core:8042;
     }
@@ -48,6 +52,11 @@ http {
 
     server {
         listen 80;
+
+        location / {
+            proxy_pass http://tfe/;
+            proxy_pass_request_headers      on;
+        }
 
         location /orthanc_core/ {
             proxy_pass http://orthanc_core/;

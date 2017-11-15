@@ -12,5 +12,6 @@
   git:
     repo: https://github.com/derekmerck/DIANA
     dest: /usr/src/DIANA
+    force: yes
   become: yes
 
