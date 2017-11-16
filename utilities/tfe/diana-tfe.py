@@ -4,7 +4,6 @@ import markdown
 import logging
 from jinja2 import FileSystemLoader, Environment
 import yaml
-import argparse
 
 
 __version__ = "0.1.0"
@@ -59,13 +58,9 @@ def prerender(config_file):
     return config, pages
 
 
+config_file = os.environ['tfe_config']
+config, pages = prerender(config_file)
+
+
 if __name__ == '__main__':
-
-    logging.basicConfig(level=logging.DEBUG)
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("config")
-    opts = parser.parse_args()
-
-    config, pages = prerender(opts.config)
     app.run(host="0.0.0.0")

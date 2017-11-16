@@ -5,7 +5,9 @@
     dest: /tmp/tfe_config.yml
 
 - name: Startup the front-end interface
-  shell: python diana-tfe.py /tmp/tfe_config.yml </dev/null >/dev/null 2>&1 &
+  shell: gunicorn diana-tfe:app
   args:
     chdir: /usr/src/DIANA/utilities/tfe
+  environment:
+    tfe_config: /tmp/tfe_config.yml
 
