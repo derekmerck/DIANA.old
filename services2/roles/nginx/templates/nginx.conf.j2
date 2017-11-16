@@ -31,7 +31,7 @@ http {
     #include /etc/nginx/conf.d/*.conf;
 
     upstream tfe {
-        server localhost:5000;
+        server 172.17.0.1:5000;
     }
 
     upstream orthanc_core {
@@ -63,17 +63,17 @@ http {
             proxy_pass_request_headers      on;
         }
 
-        location /orthanc_ci0/ {
+        location /christianson/ {
             proxy_pass http://orthanc_ci0/;
             proxy_pass_request_headers      on;
         }
 
-        location /orthanc_hb/ {
+        location /hobit/ {
             proxy_pass http://orthanc_hb/;
             proxy_pass_request_headers      on;
         }
 
-        location /orthanc_p3/ {
+        location /protect3/ {
             proxy_pass http://orthanc_p3/;
             proxy_pass_request_headers      on;
         }

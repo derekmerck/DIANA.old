@@ -6,6 +6,7 @@
     - flask
     - jinja2
     - markdown
+    - gunicorn
   when: FRESH is defined
 
 - name: Install DIANA-Utils
