@@ -1,13 +1,13 @@
 ---
-- name: Copy TFE Config
+- name:   Copy trail front-end interface config
   copy:
     src:  "{{ tfe_config }}"
-    dest: /tmp/tfe_config.yml
+    dest: /tmp/tfe_cfg.yml
 
-- name: Startup the front-end interface
-  shell: gunicorn -b 0.0.0.0:5000 diana-tfe:app
+- name:   Startup the trial front-end interface
+  shell:  gunicorn -D -b 0.0.0.0:5000 diana-tfe:app
   args:
     chdir: /usr/src/DIANA/utilities/tfe
   environment:
-    tfe_config: /tmp/tfe_config.yml
+    tfe_config: /tmp/tfe_cfg.yml
 

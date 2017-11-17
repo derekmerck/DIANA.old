@@ -7,12 +7,22 @@
     - jinja2
     - markdown
     - gunicorn
+    - requests
+    - pyyaml
   when: FRESH is defined
 
-- name: Install DIANA-Utils
+- name: Install DIANA-Utils from local
+  copy:
+    src:  ../../DIANA/utilities
+    dest: /usr/src/DIANA
+  become: yes
+  when: false # LOCAL_DIANA is defined
+
+- name: Install DIANA-Utils from github
   git:
     repo: https://github.com/derekmerck/DIANA
     dest: /usr/src/DIANA
     force: yes
   become: yes
+  when: LOCAL_DIANA is not defined
 

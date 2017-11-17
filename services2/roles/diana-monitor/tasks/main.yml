@@ -1,32 +1,24 @@
 ---
-# TODO: d-mon should be a PIP package w requirements, etc.
-- name: Install d-mon.py
-  copy:
-    src:  ../connect/d-mon.py
-    dest: /usr/bin/d-mon.py
-    mode: u+rwx,g+rx,a+rx
+- name: Install packages
+  package:
+    name: supervisor
+    state: present
   become: yes
+  when: FRESH is defined
 
-- name: Install StructuredTags.py
+- name: Add supervisor-dmon.conf to supervisord
   copy:
-    src:  ../connect/StructuredTags.py
-    dest: /usr/bin/StructuredTags.py
-    mode: u+rwx,g+rx,a+rx
+    src:  templates/supervisor-dmon.conf
+    dest: /etc/supervisor/conf.d/dmon.conf
   become: yes
-
-
-- name: install pip packages
-  pip: name={{ item }}
-  sudo: True
-  with_items:
-    - requests
-    - pyyaml
-
 
 - name: Copy d-mon config
-  template: >
-    src={{ dmon_config }}
-    dest=/tmp/{{ dmon_config }}
+  template:
+    src: "{{ dmon_config }}"
+    dest: /tmp/dmon_cfg.yml
 
-#- name: Run d-mon
-#  shell: python /tmp/{{ dmon_config }} --config /tmp/{{ dmon_config }}
+- name: Run d-mon deamon
+  supervisorctl:
+    name: d-mon
+    state: present
+  become: yes

@@ -1,3 +1,6 @@
+# IMPORTANT!  If using Splunk, you need at _least_ 1GB of ram
+# Vagrant has only 500MB out of the box
+
 ---
 - name: Setup splunk index container
   docker_container:
@@ -12,5 +15,5 @@
     env:
       # Answer yes accepts presumptive upgrade
       SPLUNK_START_ARGS:  "--accept-license --answer-yes"
-#      SPLUNK_ADD: "tcp 1514"
+      SPLUNK_ADD: "tcp 1514"
       SPLUNK_CMD: "edit user admin -password {{ splunk_admin_pw }} -role admin -auth admin:changeme"

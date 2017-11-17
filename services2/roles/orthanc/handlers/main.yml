@@ -2,6 +2,5 @@
 - name: restart_orthanc
   docker_container:
     name: "{{ name }}"
-    state: started
-    restart: yes
+    state: stopped
   ignore_errors: yes  # Might not exist yet

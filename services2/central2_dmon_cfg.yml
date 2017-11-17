@@ -2,6 +2,8 @@
 # Could run this as a repeated one-shot with cron, rather than
 # against /changes w a delay
 
+# address should be `eth0` for production, `eth1` for testing
+
 indexer:   &INDEXER
   indexer: http://{{ ansible_eth1.ipv4.address }}:8088
   indexer_token: "{{ splunk_hec_token }}"
@@ -38,4 +40,3 @@ tasks:
     <<:          *INDEXER
 
 delay: 2
-

@@ -1,5 +1,4 @@
 ---
-
 - name: "Setup orthanc db in postgres"
   postgresql_db: "name={{ name }}
                   state=present
@@ -27,6 +26,9 @@
   become: no
   notify: restart_orthanc
 
+# Force stop if necessary
+- meta: flush_handlers
+
 - name: Setup orthanc container
   docker_container:
 
@@ -42,10 +44,3 @@
 
     env:
       PLUGINS_BUNDLE_DEFAULTS: false
-
-#- name: Get containter IP
-#  shell: docker inspect --format "{{ .NetworkSettings.IPAddress }}" {{name}}
-#  register:  "addrs"
-#
-#- debug:
-#    msg: "Addresses: {{addrs}}"

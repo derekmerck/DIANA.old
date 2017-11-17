@@ -39,6 +39,16 @@
     - docker-py
   when: FRESH is defined
 
+- name: Get dockerhost
+  shell: /sbin/ip route | awk '/docker0/ { print $NF }'
+  register: dockerhost_response
+
+- set_fact:
+    dockerhost_ip: "{{ dockerhost_response.stdout }}"
+
+- debug:
+    msg: "Setting dockerhost bridge addr: {{ dockerhost_ip }}"
+
 - name: Setup persistent data
   docker_container:
     name: data

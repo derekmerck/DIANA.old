@@ -1,24 +1,20 @@
 ---
 - name: "Create nginx config"
-  template: >
-    src=templates/nginx.conf.j2
-    dest=/tmp/nginx-head.conf
+  template:
+    src: templates/nginx.conf.j2
+    dest: /tmp/nginx-head.conf
   become: no
 
 
 - name: Setup nginx container
   docker_container:
 
-    name: nginx-head
+    name: nginx
     image: nginx
     state: started
     ports: ["80:80"]
-    links:
-      - orthanc_core
-      - orthanc_ci0
-      - orthanc_hb
-      - orthanc_p3
+    etc_hosts:
+      dockerhost: "{{ dockerhost_ip }}"
+    links: "{{ r_proxies.keys() }}"
     volumes:
       - "/tmp/nginx-head.conf:/etc/nginx/nginx.conf:ro"
-#      - "/tmp/www:/etc/nginx/html:ro"
-

@@ -5,12 +5,19 @@ import logging
 from jinja2 import FileSystemLoader, Environment
 import yaml
 
+# In case DIANA is being run from folders
+import sys
+sys.path.append('../../../DIANA')
+from utilities.GUIDMint import Get_a_GUID
 
 __version__ = "0.1.0"
 
 from flask import Flask
 app = Flask(__name__)
+app.register_blueprint(Get_a_GUID.api_bp, url_prefix='/guid')
 
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger('DIANA TFE')
 
 def read(*paths):
     """Build a file path from *paths* and return the contents."""
@@ -52,15 +59,14 @@ def prerender(config_file):
 
     for network, value in config['studies'].iteritems():
         for study, value in value.iteritems():
-            logging.debug(value)
+            logger.debug(value)
             pages['upload_'+value['study_id']] = render_from_template('templates', 'upload.md.j2', **value)
 
     return config, pages
 
-
 config_file = os.environ['tfe_config']
 config, pages = prerender(config_file)
 
-
 if __name__ == '__main__':
+    logger.debug('Starting up TFE app')
     app.run(host="0.0.0.0")

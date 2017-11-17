@@ -1,28 +1,25 @@
-# Simple DIANA Setup
+# Setup Central Imaging DIANA Stack
+# Merck, Fall 2017
 
-# Orthanc Queues      814x
-# Orthanc Archives    804x
-# Splunk Syslog        512
-# Splunk Interface    8000
-# Splunk HEC          8088
-# Splunk API          8089
-# Postgres            5432
+# TODO: splunk - Setup folder monitors automatically
+# TODO: splunk - Add/Get HEC tokens/indices automatically
+# TODO: splunk - pipe in _all_ logs from systems, orthanc, postgres, gunicorn, d-mon
 
-# IMPORTANT!  If using a splunk indexer, you need at _least_ 1GB of ram
+# TODO: Frontend - Add GUIDMint api, setup anonymizer on ingress
+# TODO: Frontend - Add Uploader
 
-# TODO: Add SMB mapped folder and setup Splunk monitor
-# TODO: Add HEC tokens/indices automatically
+# TODO: Add Core Storage (all data is in the same buckets, should be able to just import them)
+# TODO: Add orthanc DICOM port if applicable (to queues)
 
-# TODO: Add Front-End
-#   TODO: Add GUIDMint
-#   TODO: Add Uploader
+# TODO: Add auto-population for studies w local data
+# TODO: Create RIH Research Imaging config (Beland, Atalay, Asaad proj)
 
-# TODO: Add Indexer for Core (all data is in the same buckets)
+# TODO: dmon.config should probably monitor {{ dockerhost_ip }} instead of eth1 or eth0??
 
-# > ansible-playbook -i secret_inventory.yml --vault-password secret_vault_pw.txt central_im_playbook.yml
+# > ansible-playbook -i secret_inventory.yml --vault-password secret_vault_pw.txt central2_playbook.yml
 
 ---
-- name: Simple DIANA Config
+- name: Setup Central Imaging DIANA Stack
 
 #  hosts: DIANA-staging
 #  hosts: localhost
@@ -41,6 +38,8 @@
     orthanc_ci_pw:    "{{ vault_orthanc_ci_pw }}"
     orthanc_hb_pw:    "{{ vault_orthanc_hb_pw }}"
     orthanc_p3_pw:    "{{ vault_orthanc_p3_pw }}"
+
+    LOCAL_DIANA: true
 
   roles:
   - role:      orthanc
@@ -94,9 +93,19 @@
   - role: splunk
 
   - role: nginx
+    r_proxies:
+      orthanc_ci0:
+        path: /christianson/
+        port: 8042
+      orthanc_hb:
+        path: /hobit/
+        port: 8042
+      orthanc_p3:
+        path: /protect3/
+        port: 8042
 
-  - role: diana-tfe
-    tfe_config: ../test/secret_central_im_tfe.yml
+  - role:        diana-tfe
+    tfe_config:  central2_tfe_cfg.yml
 
-#  - role:        monitor
-#    dmon_config: dmon_central2.yml
+  - role:        diana-monitor
+    dmon_config: central2_dmon_cfg.yml

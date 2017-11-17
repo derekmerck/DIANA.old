@@ -31,24 +31,14 @@ http {
     #include /etc/nginx/conf.d/*.conf;
 
     upstream tfe {
-        server 172.17.0.1:5000;
+        server {{ dockerhost_ip }}:5000;
     }
 
-    upstream orthanc_core {
-        server orthanc_core:8042;
+    {% for key, value in r_proxies.iteritems() %}
+    upstream {{key}} {
+        server {{key}}:{{ value.port }};
     }
-
-    upstream orthanc_ci0 {
-        server orthanc_ci0:8042;
-    }
-
-    upstream orthanc_hb {
-        server orthanc_hb:8042;
-    }
-
-    upstream orthanc_p3 {
-        server orthanc_p3:8042;
-    }
+    {% endfor %}
 
     server {
         listen 80;
@@ -58,25 +48,12 @@ http {
             proxy_pass_request_headers      on;
         }
 
-        location /orthanc_core/ {
-            proxy_pass http://orthanc_core/;
+        {% for key, value in r_proxies.iteritems() %}
+        location {{ value.path }} {
+            proxy_pass http://{{ key }}/;
             proxy_pass_request_headers      on;
         }
-
-        location /christianson/ {
-            proxy_pass http://orthanc_ci0/;
-            proxy_pass_request_headers      on;
-        }
-
-        location /hobit/ {
-            proxy_pass http://orthanc_hb/;
-            proxy_pass_request_headers      on;
-        }
-
-        location /protect3/ {
-            proxy_pass http://orthanc_p3/;
-            proxy_pass_request_headers      on;
-        }
+        {% endfor %}
 
     }
 }
