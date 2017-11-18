@@ -1,11 +1,4 @@
 ---
-- name: Install packages
-  package:
-    name: supervisor
-    state: present
-  become: yes
-  when: FRESH is defined
-
 - name: Add supervisor-dmon.conf to supervisord
   copy:
     src:  templates/supervisor-dmon.conf
@@ -20,5 +13,5 @@
 - name: Run d-mon deamon
   supervisorctl:
     name: d-mon
-    state: present
+    state: restarted
   become: yes

@@ -1,9 +1,17 @@
 ---
+- name: Install packages
+  package:
+    name: supervisor
+    state: present
+  become: yes
+  when: FRESH is defined
+
 - name: Install pip packages
   pip: name={{ item }}
   become: yes
   with_items:
     - flask
+    - flask_restplus
     - jinja2
     - markdown
     - gunicorn
