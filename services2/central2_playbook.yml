@@ -3,20 +3,21 @@
 
 # TODO: splunk - Setup folder monitors automatically
 # TODO: splunk - Add/Get HEC tokens/indices automatically
+# TODO: splunk - Add/Get imaging stat reports automatically
 # TODO: splunk - pipe in _all_ logs from systems, orthanc, postgres, gunicorn, d-mon
 
 # TODO: Frontend - Setup per-project anonymizers on ingress
-# TODO: Frontend - Add Uploader
+# TODO: Frontend - Add uploader
 
 # TODO: Switch to mount volumes for DBs (so they can live in other spaces)
-# TODO: Add Core Storage (all data is in the same buckets, should be able to just import them)
+# TODO: Add Core Storage (all data is in the same buckets, should be abley to just import them)
 # TODO: Add orthanc DICOM port if applicable (to queues)
 # TODO:  - Setup queue per enrolling institution to tag the data?
+# TODO:  - Or a single port with a different AETitle that indicates sender?
+# TODO:    see: https://groups.google.com/forum/#!topic/orthanc-users/RnDdnb3HmHg
 
 # TODO: Add auto-population for studies w local data
 # TODO: Create RIH Research Imaging config (Beland, Atalay, Asaad proj)
-
-# TODO: dmon.config should probably monitor {{ dockerhost_ip }} instead of eth1 or eth0??
 
 # TODO: Omero
 # TODO: JetBrains/Jira Desk

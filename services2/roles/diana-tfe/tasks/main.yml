@@ -1,11 +1,11 @@
 ---
-- name:   Copy trail front-end interface config
+- name:   Copy trial front-end interface config
   copy:
     src:  "{{ tfe_config }}"
     dest: /tmp/tfe_cfg.yml
 
 - name: Add supervisor-gunicorn.conf to supervisord
-  copy:
+  template:
     src:  templates/supervisor-gunicorn.conf
     dest: /etc/supervisor/conf.d/gunicorn.conf
   become: yes

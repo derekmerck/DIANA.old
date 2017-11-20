@@ -2,16 +2,14 @@
 # Could run this as a repeated one-shot with cron, rather than
 # against /changes w a delay
 
-# address should be `eth0` for production, `eth1` for testing
-
 indexer:   &INDEXER
-  indexer: http://{{ ansible_eth1.ipv4.address }}:8088
+  indexer: http://{{ dockerhost_ip }}:8088
   indexer_token: "{{ splunk_hec_token }}"
   indexer_dest:  dicom
 
 tasks:
 
-  - source:      http://{{ ansible_eth1.ipv4.address }}:8145
+  - source:      http://{{ dockerhost_ip }}:8145
     user:        orthanc
     password:    {{ orthanc_ci_pw }}
     dest:        orthanc-ci0  # Underscores -> dashes
@@ -20,7 +18,7 @@ tasks:
     delete_anon: true
     delete_phi:  true
 
-  - source:      http://{{ ansible_eth1.ipv4.address }}:8146
+  - source:      http://{{ dockerhost_ip }}:8146
     user:        orthanc
     password:    {{ orthanc_hb_pw }}
     dest:        orthanc-hb  # Underscores -> dashes
@@ -29,14 +27,19 @@ tasks:
     delete_anon: true
     delete_phi:  true
 
-  - source:      http://{{ ansible_eth1.ipv4.address }}:8045
+  - source:      http://{{ dockerhost_ip }}:8045
     user:        orthanc
     password:    {{ orthanc_ci_pw }}
     <<:          *INDEXER
 
-  - source:      http://{{ ansible_eth1.ipv4.address }}:8046
+  - source:      http://{{ dockerhost_ip }}:8046
     user:        orthanc
     password:    {{ orthanc_hb_pw }}
+    <<:          *INDEXER
+
+  - source:      http://{{ dockerhost_ip }}:8047
+    user:        orthanc
+    password:    {{ orthanc_p3_pw }}
     <<:          *INDEXER
 
 delay: 2

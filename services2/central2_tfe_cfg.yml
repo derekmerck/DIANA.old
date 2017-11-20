@@ -24,21 +24,25 @@ studies:
   Brown University:
 
     Christianson Syndrome:
-      pi:       "[Morrow](https://vivo.brown.edu/display/emmorrow)"
+      trial: Christianson Syndrome
+      pi:     "[Morrow](https://vivo.brown.edu/display/emmorrow)"
       desc: >
         Ut sagittis, leo eu fermentum ornare, urna risus facilisis leo, non rutrum neque leo aliquam lectus. Aliquam vel dolor ut tellus luctus blandit. Ut sed sodales magna, eget porta lectus. Duis egestas, tellus sed aliquam placerat, nibh nibh ornare dolor, quis vestibulum nisl dui sed magna. Vivamus dignissim congue consectetur. Nulla commodo metus tortor, non aliquam quam dignissim ac. Praesent metus justo, lobortis consectetur consequat ac, laoreet in massa.
+      stats: >
+        <iframe height="336" width="480" frameborder="0" src="http://trusty64:8000/en-US/embed?s=%2FservicesNS%2Fadmin%2Fsearch%2Fsaved%2Fsearches%2FChristianson%2520Studies%2520By%2520Month%252C%2520Patient&oid=DTTcz6ZF1VQqMJg%5EwtkpJouwx3MzUm5a9JBC7hJ8ZCu1OCbV6aEKo3D6IZ1FG0Mtym00aHYMLM1TlJ0Fys_ic6PpWPqhnXAG2XOaZ1jxmQ7Wbo0e7O9TDfaK%5ERuSurrgcz6y7pSPMvtvz9nXnJgCQkH1lB2OrOmecs8MMo"></iframe>
 
       study_id: christianson
       ports:
-        archive_api:   8046  # ie, orthanc_ci:8046
-        queue_api:     8146  # ie, orthanc_ci_in:8146
-        queue_dicom:   4246
+        archive_api:   8045
+        queue_api:     8145
+        queue_dicom:   4245
 
 
   NIH/NETT/SIREN:
 
     HOBIT:
-      pi:       "[Barsan](https://medicine.umich.edu/dept/emergency-medicine/william-barsan-md)"
+      trial: HOBIT
+      pi:    "[Barsan](https://medicine.umich.edu/dept/emergency-medicine/william-barsan-md)"
       desc: >
         Ut sagittis, leo eu fermentum ornare, urna risus facilisis leo, non rutrum neque leo aliquam lectus. Aliquam vel dolor ut tellus luctus blandit. Ut sed sodales magna, eget porta lectus. Duis egestas, tellus sed aliquam placerat, nibh nibh ornare dolor, quis vestibulum nisl dui sed magna. Vivamus dignissim congue consectetur. Nulla commodo metus tortor, non aliquam quam dignissim ac. Praesent metus justo, lobortis consectetur consequat ac, laoreet in massa.
       study_id: hobit
@@ -48,16 +52,17 @@ studies:
         queue_dicom:   4246
 
     ProtectIII:
-      pi:       "[Wright](http://www.em.emory.edu/about/directories/faculty/wright-david.html)"
+      trial:  ProtectIII
+      pi:     "[Wright](http://www.em.emory.edu/about/directories/faculty/wright-david.html)"
       desc: >
         Ut sagittis, leo eu fermentum ornare, urna risus facilisis leo, non rutrum neque leo aliquam lectus. Aliquam vel dolor ut tellus luctus blandit. Ut sed sodales magna, eget porta lectus. Duis egestas, tellus sed aliquam placerat, nibh nibh ornare dolor, quis vestibulum nisl dui sed magna. Vivamus dignissim congue consectetur. Nulla commodo metus tortor, non aliquam quam dignissim ac. Praesent metus justo, lobortis consectetur consequat ac, laoreet in massa.
       citation: http://www.nejm.org/doi/full/10.1056/NEJMoa1404304
 
       study_id: protect3
       ports:
-        archive_api:   8046
-        queue_api:     8146
-        queue_dicom:   4246
+        archive_api:   8047
+        queue_api:     8147
+        queue_dicom:   4247
 
 apps:
 
