@@ -2,3 +2,5 @@ pyyaml
 flask
 markdown
 jinja2
+numpy
+bokeh

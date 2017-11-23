@@ -1,10 +1,17 @@
 ---
 - name: Install packages
   package:
-    name: supervisor
+    name: "{{ item }}"
     state: present
   become: yes
+  with_items:
+    - supervisor
+    - python-numpy
   when: FRESH is defined
+
+# Sometimes `supervisor` messes up the log umask and Splunk can't
+# read them.  Temporary fix is:
+# $ sudo chmod +r /var/log/supervisor/*
 
 - name: Install pip packages
   pip: name={{ item }}
@@ -17,6 +24,8 @@
     - gunicorn
     - requests
     - pyyaml
+    - bokeh
+    - splunk-sdk
   when: FRESH is defined
 
 - name: Install DIANA-Utils from local

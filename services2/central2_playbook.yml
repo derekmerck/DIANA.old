@@ -1,35 +1,34 @@
 # Setup Central Imaging DIANA Stack
 # Merck, Fall 2017
 
-# TODO: splunk - Setup folder monitors automatically
-# TODO: splunk - Add/Get HEC tokens/indices automatically
-# TODO: splunk - Add/Get imaging stat reports automatically
-# TODO: splunk - pipe in _all_ logs from systems, orthanc, postgres, gunicorn, d-mon
+# TODO: splunk - Add/Get HEC tokens automatically
+# TODO: splunk - Configure as forwarder if provided a "head"
 
-# TODO: Frontend - Setup per-project anonymizers on ingress
-# TODO: Frontend - Add uploader
+# TODO: Orthanc - Once logging is fixed, should setup the RIH routers to work that way
+# TODO: Orthanc - don't have to use osimis/plugins for ingress q's, btw
+# TODO: Orthanc - Add DICOM port if applicable (to queues)
+# TODO: Orthanc - Setup metadata tag for enrolling institution based on called AET
+#       - See: https://groups.google.com/forum/#!topic/orthanc-users/RnDdnb3HmHg
+#       - Add calledAET as metadata, set it with LUA or in uploader
+#       - Collect metadata when DICOM tags are indexed
 
-# TODO: Switch to mount volumes for DBs (so they can live in other spaces)
-# TODO: Add Core Storage (all data is in the same buckets, should be abley to just import them)
-# TODO: Add orthanc DICOM port if applicable (to queues)
-# TODO:  - Setup queue per enrolling institution to tag the data?
-# TODO:  - Or a single port with a different AETitle that indicates sender?
-# TODO:    see: https://groups.google.com/forum/#!topic/orthanc-users/RnDdnb3HmHg
+# TODO: Frontend - Setup per-project anonymizers on ingress (via dmon + tfe/guid api)
+
+# TODO: dmon - timer per task?  supervisorctl restart to reindex?  Check dest before sending/force
 
 # TODO: Add auto-population for studies w local data
 # TODO: Create RIH Research Imaging config (Beland, Atalay, Asaad proj)
 
-# TODO: Omero
-# TODO: JetBrains/Jira Desk
+# TODO: Omero for microscopy (reminds me too much of xnat...)
 
 # > ansible-playbook -i secret_inventory.yml --vault-password secret_vault_pw.txt central2_playbook.yml
 
 ---
 - name: Setup Central Imaging DIANA Stack
 
-#  hosts: DIANA-staging
+  hosts: DIANA-staging
 #  hosts: localhost
-  hosts:  trusty64
+#  hosts:  trusty64
 
   vars_files:
     - secret_vault.yml
@@ -39,24 +38,27 @@
     pg_admin_pw:      "{{ vault_pg_admin_pw }}"
     orthanc_db_pw:    "{{ vault_orthanc_db_pw }}"
     splunk_admin_pw:  "{{ vault_splunk_admin_pw }}"
-    splunk_hec_token: "{{ vault_splunk_hec_token }}"  # just for d-mon
+    splunk_hec_token: "{{ vault_splunk_hec_token_staging }}"  # For d-mon, logging
     orthanc_admin_pw: "{{ vault_orthanc_admin_pw }}"
     orthanc_ci_pw:    "{{ vault_orthanc_ci_pw }}"
     orthanc_hb_pw:    "{{ vault_orthanc_hb_pw }}"
     orthanc_p3_pw:    "{{ vault_orthanc_p3_pw }}"
 
     # LOCAL_DIANA: true
+    # FRESH: true
 
   roles:
-  - role:      orthanc
-    title:     DIANA Core
-    name:      orthanc_core
-    api_port:  8042
-    admin_pw:  "{{ orthanc_admin_pw }}"
+
+  - role: splunk
+  # !!NEED TO ADD HEC TOKEN BY HAND!!
+
+  # ---------------------------
+  # BROWN STUDIES
+  # ---------------------------
 
   - role:      orthanc
     title:     Christianson Imaging
-    name:      orthanc_ci0
+    name:      orthanc_ci
     api_port:  8045
     admin_pw:  "{{ orthanc_ci_pw }}"
 
@@ -67,10 +69,14 @@
     dicom_port: 4145
     admin_pw:  "{{ orthanc_ci_pw }}"
     peers:
-      orthanc_ci0:
-        Url:  "http://orthanc_ci0:8042"
+      orthanc_ci:
+        Url:  "http://orthanc_ci:8042"
         Username: "orthanc"
         Password: "{{ orthanc_ci_pw }}"
+
+  # ---------------------------
+  # NIH/NETT/SIREN STUDIES
+  # ---------------------------
 
   - role:      orthanc
     title:     HOBIT Imaging
@@ -78,7 +84,7 @@
     api_port:  8046
     admin_pw:  "{{ orthanc_hb_pw }}"
 
-  - role:      roles/orthanc
+  - role:      orthanc
     title:     HOBIT Queue
     name:      orthanc_hb_in
     api_port:  8146
@@ -96,11 +102,13 @@
     api_port:  8047
     admin_pw:  "{{ orthanc_p3_pw }}"
 
-  - role: splunk
+  # ---------------------------
+  # SUPPORT SERVICES
+  # ---------------------------
 
   - role: nginx
     r_proxies:
-      orthanc_ci0:
+      orthanc_ci:
         path: /christianson/
         port: 8042
       orthanc_hb:
@@ -115,3 +123,10 @@
 
   - role:        diana-monitor
     dmon_config: central2_dmon_cfg.yml
+
+
+
+
+
+
+

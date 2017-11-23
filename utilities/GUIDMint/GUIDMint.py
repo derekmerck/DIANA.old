@@ -21,7 +21,7 @@ __version__ = "0.9.0"
 
 DEFAULT_MAX_DATE_OFFSET = int(365/2)   # generated pseudodob is within 6 months
 DEFAULT_NAMEBANK = "US_CENSUS"
-DEFAULT_HASH_PREFIX_LENGTH = 8  # 8 = 64bits, -1 = entire value
+DEFAULT_HASH_PREFIX_LENGTH = 16  # 8 = 64bits, -1 = entire value
 
 class NameBank (object):
     # NameBanks should contain gender specific surnames
@@ -116,10 +116,10 @@ class MD5Mint(GUIDMint):
 
     def mint_guid(self, value, *args, **kwargs):
         # Accept any value and return md5 of it
-        return md5(value.encode('utf-8')).hexdigest()
+        return md5(value.encode('utf-8')).hexdigest()[:self.hash_prefix_length]
 
     def pseudonym(self, guid, gender="U", dob=None, age=None, **kwargs):
-        return self.prefix + guid[0:self.hash_prefix_length]
+        return self.prefix + guid
 
 
 class PseudoMint(GUIDMint):
@@ -183,6 +183,9 @@ class PseudoMint(GUIDMint):
             ddob = datetime.now()-timedelta(days=age*365.25)
             dob = str(ddob.date())
 
+        # TODO: Handle cases where middle initial is missing, or names are in non-DICOM format?
+        name = name.upper()
+
         value = "|".join([name, str(dob), str(gender)])
 
         return GUIDMint.pseudo_identity(self, value, gender=gender, dob=dob)
@@ -208,7 +211,7 @@ if __name__=="__main__":
     md5_mint.pseudo_identity(name, gender=gender, dob=dob)
     pseudo_mint.pseudo_identity(name, gender=gender, dob=dob)
 
-    name = "BOOSTSU001"
+    name = "PROTECT3-SU001"
     age = 65
 
     md5_mint.pseudo_identity(name, age=age)

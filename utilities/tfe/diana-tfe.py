@@ -12,6 +12,8 @@ from bokeh.plotting import figure, output_file, show
 from bokeh.embed import components
 from splunklib import client
 
+from flask_httpauth import HTTPBasicAuth
+
 # In case DIANA is being run from folders
 sys.path.append('../../../DIANA')
 from utilities.GUIDMint import Get_a_GUID
@@ -21,8 +23,21 @@ __version__ = "0.1.0"
 app = Flask(__name__)
 app.register_blueprint(Get_a_GUID.api_bp, url_prefix='/guid')
 
+auth = HTTPBasicAuth()
+
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger('DIANA TFE')
+
+from hashlib import md5
+
+# Super simple password check
+@auth.verify_password
+def verify_pw(username, password):
+    hash = md5(password + '+' + config['credentials']['salt']).hexdigest()
+    if hash in config['credentials']['auth']:
+        return True
+    return False
+
 
 def read(*paths):
     """Build a file path from *paths* and return the contents."""
@@ -44,8 +59,8 @@ def render_md(content, template='strapdown.html.j2', **kwargs):
 def render_index():
     return render_md(pages['index'])
 
-
 @app.route('/upload/<study_id>')
+@auth.login_required
 def render_upload(study_id):
     if 'upload_'+study_id not in pages.keys():
         abort(404)
@@ -115,6 +130,7 @@ def prerender(config_file):
 
     for network, value in config['studies'].iteritems():
         for study, value in value.iteritems():
+            value['domain'] = config['domain']
             logger.debug(value)
             pages['upload_'+value['study_id']] = render_from_template('templates', 'upload.md.j2', **value)
             pages['stats_'+value['study_id']] = render_from_template('templates', 'stats.md.j2', **value)
@@ -136,3 +152,7 @@ splunk = client.connect(host=splunk_host,
 if __name__ == '__main__':
     logger.debug('Starting up TFE app')
     app.run(host="0.0.0.0")
+
+
+
+

@@ -1,3 +1,5 @@
+# TODO: splunk - Setup cifs folder monitors automatically?
+
 ---
 - name:     Install packages
   package:

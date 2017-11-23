@@ -52,3 +52,5 @@ tmtagsHistory
 *.sublime-project
 *.sublime-workspace
 .bundle
+
+cirr_playbook.yml

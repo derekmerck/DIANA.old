@@ -2,9 +2,8 @@
 - name: install rhel-extra for cent/rhel
   become: yes
   command: rpm -iUvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
   ignore_errors: yes  # Maybe already installed
-  when: FRESH is defined
+  when: FRESH is defined and (ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat')
 
 #- name: install universe repo for ubuntu
 #  sudo: True
@@ -56,6 +55,6 @@
     state: present
     volumes:
       - /var/lib/postgresql/data
-      - /var/lib/orthanc/db
+      # - /var/lib/orthanc/db
       - /opt/splunk/etc
       - /opt/splunk/var

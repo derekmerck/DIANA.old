@@ -1,35 +1,14 @@
-## {{ trial }} Self-Service Imaging Submission Portal
+## {{ short_name or full_name }} Self-Service Imaging Submission Portal
 
-Create a single zip file for each study and drag and drop it onto the
-file selection box. The study will be anonymized and uploaded to
-central imaging for review.  The enrolling site research admin, central
-reader, and PI will be notified by email with the assigned GUID and pseudo-identity.
+There are two methods for submitting a trial subject's imaging studies:
 
-<form>
-  <div class="form-group">
-    <label>
-      Enrolling Site:
-    </label>
-    <select class="form-control">
-      <option value="site1 ">
-        Rhode Island Hospital
-      </option>
-      <option value="site2">
-        Emory University Hospital
-      </option>
-      <option value="site3">
-        University of Michigan Medical Center
-      </option>
-      <option value="site4">
-        Tufts University Hospital
-      </option>
-    </select>
-    <label>
-      Upload A File:
-    </label>
-    <input type="file" class="form-control">
-    <button type="submit" class="btn btn-primary">
-      Submit!
-    </button>
-  </div>
-</form>
+1. Create a new DICOM node on your local PACS server and push the studies directly.
+    * Address: `dcm.{{ domain }}`
+    * Port: `{{ ports.queue_dicom }}`
+    * AE Title: `{{ study_id | upper }}`
+    <br><br>
+2. Export the study from your local PACS server to a folder, as if you were going to write it to a CD.  Then, log into the **[anonymization queue][anonq]** and upload the files by drag-and-dropping each folders' contents into the interface. 
+
+[anonq]: http://www.{{ domain }}:{{ ports.queue_api }}/app/explorer.html#upload
+
+In both cases, the study will be anonymized and uploaded to central imaging for review.  The enrolling site research admin, central reader, and PI will be notified by email with the assigned GUID and pseudo-identity.

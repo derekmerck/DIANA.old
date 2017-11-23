@@ -18,3 +18,10 @@
     links: "{{ r_proxies.keys() }}"
     volumes:
       - "/tmp/nginx-head.conf:/etc/nginx/nginx.conf:ro"
+
+    log_driver: splunk
+    log_options:
+      splunk-token: "{{ splunk_hec_token }}"
+      splunk-url: http://{{ dockerhost_ip }}:8088
+      splunk-index: diana_svc
+      splunk-source: nginx

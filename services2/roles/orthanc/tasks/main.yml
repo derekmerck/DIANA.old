@@ -1,5 +1,5 @@
 ---
-- name: "Setup orthanc db in postgres"
+- name: "Setup {{ name }} db in postgres"
   postgresql_db: "name={{ name }}
                   state=present
                   login_host=localhost
@@ -18,29 +18,49 @@
                    login_user=postgres
                    login_password={{ pg_admin_pw }}"
 
-- name: "Create orthanc config"
+- name: "Setup data folder"
+  file:
+    path:  /data/orthanc/db
+    state: directory
+    mode:  0777
+  become: yes
+
+- name: "Create {{ name }} config"
 #    sudo: True
   template: >
     src=templates/orthanc.json.j2
-    dest=/tmp/{{ name }}.json
+    dest=/data/orthanc/{{ name }}.json
   become: no
   notify: restart_orthanc
 
 # Force stop if necessary
 - meta: flush_handlers
 
-- name: Setup orthanc container
+- name: Setup {{ name }} container
   docker_container:
 
     name: "{{ name }}"
     image: osimis/orthanc
+    # On RHEL, this _may_ need to be ["--logdir...", "config.json"]
+    # command: ["--verbose /etc/orthanc/orthanc.json"]
+
     state: started
     links: "{{ ['postgres'] if peers=={} else ['postgres']+peers.keys() }}"
 
     ports: ["{{ api_port }}:8042"]
     volumes_from: data
     volumes:
-      - "/tmp/{{ name }}.json:/etc/orthanc/orthanc.json:ro"
+      - "/data/orthanc/{{ name }}.json:/etc/orthanc/orthanc.json:ro"
+      - "/data/orthanc/db:/var/lib/orthanc/db"
+
+    log_driver: splunk
+    log_options:
+      splunk-token: "{{ splunk_hec_token }}"
+      splunk-url: http://{{ dockerhost_ip }}:8088
+      splunk-index: diana_svc
+      splunk-source: "{{ name }}"
 
     env:
       PLUGINS_BUNDLE_DEFAULTS: false
+
+
