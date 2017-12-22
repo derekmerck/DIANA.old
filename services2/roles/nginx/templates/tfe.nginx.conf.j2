@@ -41,7 +41,7 @@ http {
     {% endfor %}
 
     server {
-        listen 80;
+        listen {{ port | default(80) }};
 
         location / {
             proxy_pass http://tfe/;

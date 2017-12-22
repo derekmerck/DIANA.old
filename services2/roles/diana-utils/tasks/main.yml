@@ -19,6 +19,7 @@
   with_items:
     - flask
     - flask_restplus
+    - flask_httpauth
     - jinja2
     - markdown
     - gunicorn
@@ -33,7 +34,7 @@
     src:  ../../DIANA/utilities
     dest: /usr/src/DIANA
   become: yes
-  when: false # LOCAL_DIANA is defined
+  when:   false # LOCAL_DIANA is defined
 
 - name: Install DIANA-Utils from github
   git:
@@ -41,5 +42,5 @@
     dest: /usr/src/DIANA
     force: yes
   become: yes
-  when: LOCAL_DIANA is not defined
+  when:   LOCAL_DIANA is not defined
 

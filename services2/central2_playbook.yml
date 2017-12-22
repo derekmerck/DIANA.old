@@ -26,7 +26,7 @@
 ---
 - name: Setup Central Imaging DIANA Stack
 
-  hosts: DIANA-staging
+  hosts: local.test
 #  hosts: localhost
 #  hosts:  trusty64
 
@@ -45,7 +45,7 @@
     orthanc_p3_pw:    "{{ vault_orthanc_p3_pw }}"
 
     # LOCAL_DIANA: true
-    # FRESH: true
+    FRESH: true
 
   roles:
 
@@ -68,6 +68,7 @@
     api_port:  8145
     dicom_port: 4145
     admin_pw:  "{{ orthanc_ci_pw }}"
+    link_peers: yes
     peers:
       orthanc_ci:
         Url:  "http://orthanc_ci:8042"
@@ -90,6 +91,7 @@
     api_port:  8146
     dicom_port: 4146
     admin_pw:  "{{ orthanc_hb_pw }}"
+    link_peers: yes
     peers:
       orthanc_hb:
         Url:  "http://orthanc_hb:8042"
@@ -107,6 +109,7 @@
   # ---------------------------
 
   - role: nginx
+    conf_type: tfe
     r_proxies:
       orthanc_ci:
         path: /christianson/

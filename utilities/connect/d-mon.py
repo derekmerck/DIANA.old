@@ -103,7 +103,7 @@ def continuous():
         url = "{0}/changes".format(task.source)
         r = requests.get(url,
                          params = {'since': task.current,
-                                 'limit': 100},
+                                   'limit': 100},
                          auth=task.auth)
         q = r.json()
         # logging.debug(pformat(q))
@@ -126,7 +126,7 @@ def one_shot():
 
     for task in tasks:
 
-        # Deidentify and move _all_ studies to dest
+        # Build a worklist
         url = "{0}/studies".format(task.source)
         r = requests.get(url, auth=task.auth)
         studies = r.json()
@@ -185,6 +185,15 @@ class Gateway(object):
         r = requests.post(url, data=data, headers=headers)
         return r
 
+    def get(self, url, params=None, headers=None, **kwargs):
+        if not headers:
+            headers = {}
+        if not params:
+            params = {}
+        r = requests.get(url, params=params, headers=headers, auth=self.auth)
+        return r
+
+
 class OrthancGateway(Gateway):
 
     def __init__(self, addr, user, password):
@@ -194,9 +203,10 @@ class OrthancGateway(Gateway):
 
 class SplunkGateway(Gateway):
 
-    def __init__(self, addr, token):
-        auth = token
+    def __init__(self, addr, user=None, password=None, token=None):
+        auth = (user, password)
         super(SplunkGateway, self).__init__(addr, auth)
+        self.token = token
 
     def post(self, url, data, headers=None, source=None, dest=None, **kwargs):
 
@@ -215,7 +225,7 @@ class SplunkGateway(Gateway):
                                         ('index', dest),
                                         ('event', data)])
 
-        headers.update({'Authorization': 'Splunk {0}'.format(self.auth)})
+        headers.update({'Authorization': 'Splunk {0}'.format(self.token)})
 
         r = super(SplunkGateway,self).post(url, data, headers)
         return r
@@ -230,6 +240,8 @@ class Task(object):
         self.dest =   d.get('dest')
 
         self.indexer = d.get('indexer')
+        self.indexer_user = d.get('indexer_user'),
+        self.indexer_password = d.get('indexer_password')
         self.indexer_token = d.get('indexer_token')
         self.indexer_dest = d.get('indexer_dest')
 
@@ -245,6 +257,8 @@ class Task(object):
                                              password=d.get('password'))
 
         self.indexer_gateway = SplunkGateway(addr=d.get('indexer'),
+                                             user=d.get('indexer_user'),
+                                             password=d.get('indexer_password'),
                                              token=d.get('indexer_token'))
 
     def __str__(self):
@@ -274,6 +288,8 @@ def parse_args():
     parser.add_argument('--password')
 
     parser.add_argument('--indexer',       help='Splunk HEC address - http://host:port/api', default=None)
+    parser.add_argument('--indexer_user',  default=None)
+    parser.add_argument('--indexer_password', default=None)
     parser.add_argument('--indexer_token', help='Splunk HEC token', default=None)
 
     parser.add_argument('--dest',          help='Copy-to Orthanc peer name in source', default=None)
@@ -286,8 +302,8 @@ def parse_args():
     parser.add_argument('--delete_anon',   help='True/False (False)', action='store_true')
 
     # Only one delay and config allowed
-    parser.add_argument('--delay',       help='-1 for one shot, otherwise seconds (2)', default=2)
-    parser.add_argument('--config',      help='YML config file for multiple tasks (None)', default=None)
+    parser.add_argument('--delay',         help='-1 for one shot, otherwise seconds (2)', default=2)
+    parser.add_argument('--config',        help='YML config file for multiple tasks (None)', default=None)
 
     return parser.parse_args()
 

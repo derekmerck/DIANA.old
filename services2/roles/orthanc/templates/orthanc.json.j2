@@ -12,7 +12,14 @@
 
   // No underscores allowed!  Use a look ahead to find just the keys
   "OrthancPeers" :
-     {{ peers | default({}) | to_json | safe | regex_replace('\_(?=.*": {)', '-')}},
+     {{ _peers | default({}) | to_nice_json | safe | regex_replace('\_(?=.*": {)', '-')}},
+
+  // If modalities is empty, it seems to break
+  // If port is quoted, it complains about not being an int, so use regex to remove "'s
+  {%  if _modalities | length > 0 %}
+  "DicomModalities":
+     {{ _modalities | to_nice_json | safe | regex_replace('"([0-9]+)"','\\1') }} ,
+  {% endif %}
 
   "Plugins": [
     // Uncomment one of the following lines according to your platform.
@@ -40,7 +47,7 @@
     "EnableStorage": false,
     "Host": "postgres",
     "Port":  5432,
-    "Database": "{{ name }}",
+    "Database": "{{ _db_name }}",
     "Username": "orthanc",
     "Password": "{{ orthanc_db_pw }}",
     "Lock": false

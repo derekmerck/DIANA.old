@@ -11,7 +11,7 @@ http {
   }
 
   server {
-    listen 8042;
+    listen {{ port }};
     location / {
       proxy_pass http://orthanc;
     }
