@@ -1,56 +1,36 @@
 # Setup Central Imaging DIANA Stack
 # Merck, Fall 2017
 
-# TODO: splunk - Add/Get HEC tokens automatically
-# TODO: splunk - Configure as forwarder if provided a "head"
-
-# TODO: Orthanc - Once logging is fixed, should setup the RIH routers to work that way
-# TODO: Orthanc - don't have to use osimis/plugins for ingress q's, btw
-# TODO: Orthanc - Add DICOM port if applicable (to queues)
-# TODO: Orthanc - Setup metadata tag for enrolling institution based on called AET
-#       - See: https://groups.google.com/forum/#!topic/orthanc-users/RnDdnb3HmHg
-#       - Add calledAET as metadata, set it with LUA or in uploader
-#       - Collect metadata when DICOM tags are indexed
-
-# TODO: Frontend - Setup per-project anonymizers on ingress (via dmon + tfe/guid api)
-
-# TODO: dmon - timer per task?  supervisorctl restart to reindex?  Check dest before sending/force
-
-# TODO: Add auto-population for studies w local data
-# TODO: Create RIH Research Imaging config (Beland, Atalay, Asaad proj)
-
-# TODO: Omero for microscopy (reminds me too much of xnat...)
-
-# > ansible-playbook -i secret_inventory.yml --vault-password secret_vault_pw.txt central2_playbook.yml
+# > ansible-playbook -i secrets/my_inventory.yml --vault-password secrets/vault_pw.txt central2_playbook.yml
 
 ---
-- name: Setup Central Imaging DIANA Stack
+- name: Setup Central Imaging DIANA Indexer
 
-  hosts: local.test
-#  hosts: localhost
-#  hosts:  trusty64
+  tags: indexer
+  hosts: indexer
 
   vars_files:
-    - secret_vault.yml
+  - secrets/vault.yml
+  - globals.yml
 
-  # Required credentials for the script, include them separately in 'secrets.yml'
+  roles:
+  - role: splunk
+  # !!NEED TO ADD HEC TOKEN BY HAND TO SECRETS!!
+
+- name: Setup Central Imaging Archive
+
+  tags: archive
+  hosts: archive
+
+  vars_files:
+  - secrets/vault.yml
+  - globals.yml
+
+  # Additional required credentials for the archive services
   vars:
-    pg_admin_pw:      "{{ vault_pg_admin_pw }}"
-    orthanc_db_pw:    "{{ vault_orthanc_db_pw }}"
-    splunk_admin_pw:  "{{ vault_splunk_admin_pw }}"
-    splunk_hec_token: "{{ vault_splunk_hec_token_staging }}"  # For d-mon, logging
-    orthanc_admin_pw: "{{ vault_orthanc_admin_pw }}"
     orthanc_ci_pw:    "{{ vault_orthanc_ci_pw }}"
     orthanc_hb_pw:    "{{ vault_orthanc_hb_pw }}"
     orthanc_p3_pw:    "{{ vault_orthanc_p3_pw }}"
-
-    # LOCAL_DIANA: true
-    FRESH: true
-
-  roles:
-
-  - role: splunk
-  # !!NEED TO ADD HEC TOKEN BY HAND!!
 
   # ---------------------------
   # BROWN STUDIES

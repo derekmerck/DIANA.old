@@ -21,6 +21,12 @@
      {{ _modalities | to_nice_json | safe | regex_replace('"([0-9]+)"','\\1') }} ,
   {% endif %}
 
+  {%  if destinations is defined%}
+ "LuaScripts" : [
+      "/etc/orthanc/scripts/autorouter.lua"
+  ],
+  {% endif %}
+
   "Plugins": [
     // Uncomment one of the following lines according to your platform.
     // Update the path to the DLL on your system.  The path is relative to the working folder

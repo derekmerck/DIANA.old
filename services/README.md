@@ -126,7 +126,7 @@ MIT
 
 ---
 
-<a name="^splunk">1</a>: Splunk is not open source, but Splunk Lite will work for this volume of logs and it _is_ free.  Replace it with you open-source syslog server of choice if necessary.[:arrow_heading_up:](#^splunk_ref)
+<a name="^splunk">1</a>: Splunk is not open source, but Splunk Lite will work for this volume of logs and it _is_ free.  Replace it with your open-source syslog server of choice if necessary.[:arrow_heading_up:](#^splunk_ref)
 
 <a name="^database">2</a>: Orthanc will happily use an existing database, or create a new one if necessary.  However, XNAT _requires_ that the database and image store volume be initialized during build, so the database may be dropped if Ansible decides to rebuild the XNAT container.[:arrow_heading_up:](#^database_ref)
 
