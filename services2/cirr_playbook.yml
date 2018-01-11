@@ -45,7 +45,7 @@
   roles:
   - role:        orthanc
     title:       CIRR Archive
-    db_name:     archive
+    db_name:     archive2
     c_name:      "orthanc_connect"
     api_port:    8142
     dicom_port:  4242
@@ -56,9 +56,9 @@
       name: orthanc
     vars:
       title:     "CIRR Archive - Worker {{ item }}"
-#      title:     "CIRR Archive"
-      db_name:   archive
+      db_name:   archive2
       c_name:    "orthanc_{{ item }}"
+      # compress_dicom: true
       api_port:  "824{{ item }}"
       admin_pw:  "{{ orthanc_admin_pw }}"
     with_sequence: count=3
@@ -88,13 +88,14 @@
   - secrets/vault.yml
   - globals.yml
 
+  # TODO: Exec into compressor and install gcdm manually on rebuild
+  # $ apt-get update
+  # $ apt-get install libgdcm-tools
   roles:
   - role:    orthanc
     title:   CIRR Archive Router
     c_name:  orthanc_archive_in
-    #api_port:   8343
-    #dicom_port: 4243
-    api_port:   8353
+    api_port:   8343
     dicom_port: 4243
     admin_pw:   "{{ orthanc_admin_pw }}"
     peers:
@@ -102,6 +103,7 @@
         Url:      "http://{{ archive_ip }}:8042"
         Username: "orthanc"
         Password: "{{ orthanc_admin_pw }}"
+    compress_dicom: True
     destinations:
     - type: peer
       dest: archive
@@ -109,17 +111,18 @@
   - role:    orthanc
     title:   CIRR Archive + Terarecon Router
     c_name:  orthanc_mux
-    api_port:   8356
+    api_port:   8346
     dicom_port: 4246
     admin_pw:   "{{ orthanc_admin_pw }}"
+    link_peers:  True
     peers:
-      archive:
-        Url:      "http://{{ archive_ip }}:8042"
+      orthanc_archive_in:
+        Url:      "http://orthanc_archive_in:8042"
         Username: "orthanc"
         Password: "{{ orthanc_admin_pw }}"
     destinations:
     - type: peer
-      dest: archive
+      dest: orthanc-archive-in   # b/c no underscores
     - type: dicom
       dest: terarecon
 

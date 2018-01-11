@@ -1,5 +1,5 @@
 # System setup vars
-base_dir:         "/cirr"
+base_dir:         "/cirr2"
 
 # Network topology
 dockerhost_ip:    "{{ dockerhost_response.stdout }}"

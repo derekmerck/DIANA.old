@@ -240,12 +240,14 @@ def UpdateDoseReports( orthanc, splunk ):
     # List of candidate series out of Splunk/dicom_series
     splunk.index = splunk.index_names['series']
     # Can limit the search with "earliest=-2d" for example
-    q = "search index={0} SeriesNumber = 997 OR SeriesNumber = 502 OR SeriesNumber = 9001 OR (SeriesNumber > 65500 AND SeriesNumber < 65600) | table ID".format(splunk.index)
+    q = "search earliest=-2d index={0} SeriesNumber = 997 OR SeriesNumber = 502 OR SeriesNumber = 9001 OR (SeriesNumber > 65500 AND SeriesNumber < 65600) | table ID".format(splunk.index)
+    logging.warning(q)
     candidates = splunk.ListItems(q)
 
     # Which ones are already available in Splunk/dose_records (looking at ParentSeriesID)
     splunk.index = splunk.index_names['dose']
-    q = "search index={0} | table ParentSeriesID".format(splunk.index)
+    q = "search earliest-2d index={0} | table ParentSeriesID".format(splunk.index)
+    logging.warning(q)
     indexed = splunk.ListItems(q)
 
     items = SetDiff(candidates, indexed)
@@ -332,4 +334,3 @@ if __name__=="__main__":
 
     # Update the dose reports based on the splunk index
     UpdateDoseReports(orthanc0, splunk)
-

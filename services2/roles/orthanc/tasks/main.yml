@@ -7,6 +7,7 @@
   # This is actually important b/c otherwise these variables are _shared_ across
   # all orthanc containers on this host, so they have to be carefully reset
   set_fact:
+    _compress_dicom: "{{ compress_dicom | default(false) }}"
     _db_name:    "{{ db_name | default(c_name) }}"
     _link_peers: "{{ link_peers | default(false) }}"
     _config_dir: "{{ base_dir }}/config/orthanc/{{ c_name }}"
@@ -117,7 +118,16 @@
       src=templates/autorouter.lua.j2
       dest={{ _config_dir }}/scripts/autorouter.lua
   become: no
-  when: destinations is defined
+  when: destinations is defined and not _compress_dicom
+  notify: restart_orthanc
+
+- name: "Create {{ c_name }} routing lua w j2k compression"
+  tags: "router"
+  template: >
+      src=templates/j2k_autorouter.lua.j2
+      dest={{ _config_dir }}/scripts/autorouter.lua
+  become: no
+  when: destinations is defined and _compress_dicom
   notify: restart_orthanc
 
 # Force stop if necessary

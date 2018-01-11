@@ -4,6 +4,9 @@
   // Whether or not the password protection is enabled
   "AuthenticationEnabled" : true,
 
+  // Enable the transparent compression of the DICOM instances
+  "StorageCompression" : {{ _compress_dicom | default(false) | to_json }},
+
   // The list of the registered users. Because Orthanc uses HTTP
   // Basic Authentication, the passwords are stored as plain text.
   "RegisteredUsers" : {
